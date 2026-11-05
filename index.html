@@ -137,6 +137,17 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .post-notes{padding:0 14px 12px;font-size:14.5px;line-height:1.5;color:#dfe1e8;white-space:pre-wrap;word-wrap:break-word}
 .post-photo{width:100%;aspect-ratio:4/3;background:var(--card2);display:block;object-fit:cover}
 .post-photo.ph{display:grid;place-items:center;color:var(--tx3);font-size:13px}
+.gal{position:relative}
+.gal-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gal-track::-webkit-scrollbar{display:none}
+.gal-track img{flex:none;width:100%;aspect-ratio:4/3;object-fit:cover;scroll-snap-align:center;display:block;background:var(--card2)}
+.gal-n{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:700;border-radius:99px;padding:4px 9px}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.thumbs .th{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--card)}
+.thumbs .th img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs .th .x{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:13px;display:grid;place-items:center}
+.thumbs .add{aspect-ratio:1;border:1.5px dashed var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--tx2);font-size:12px;font-weight:700}
+.thumbs .add svg{width:24px;height:24px;color:var(--tx3)}
 .post-actions{display:flex;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--line);flex-wrap:wrap}
 .react{border-radius:99px;padding:6px 10px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid transparent;display:flex;align-items:center;gap:4px;font-weight:700}
 .react small{font-size:11.5px;color:var(--tx2)}
@@ -301,7 +312,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:90;width:100%;heigh
 <div class="sheet" id="sheet"><div class="grab"></div><div id="sheetBody"></div></div>
 <div class="toast" id="toast"></div>
 <canvas id="fx"></canvas>
-<input type="file" id="photoIn" accept="image/*" hidden>
+<input type="file" id="photoIn" accept="image/*" multiple hidden>
 
 <script>
 /* ============================== constants ============================== */
@@ -311,6 +322,8 @@ const P = {
 };
 const OTHER = {oliver:'alexis', alexis:'oliver'};
 const DAYS = 30;
+const CHALLENGE_START = '2026-11-05';   // Day 1
+const MAX_PHOTOS = 5;
 const TYPES = ['Easy','Tempo','Long','Intervals','Hills','Trail','Treadmill','Race','Recovery'];
 const FEELS = [['😵','Rough'],['😮‍💨','Hard'],['🙂','Fine'],['😎','Good'],['🚀','Flying']];
 const REACTS = ['🔥','💪','👏','🫡','😮‍💨'];
@@ -351,7 +364,7 @@ const LS = {
 const S = {
   me: LS.get('rc_me', null),
   logs: LS.get('rc_logs', {}),
-  cfg: LS.get('rc_cfg', {start: null, updatedAt: 0}),
+  cfg: LS.get('rc_cfg', {start: CHALLENGE_START, updatedAt: 0}),
   view: 'home',
   feedFilter: 'all',
   photos: {},
@@ -367,7 +380,7 @@ const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); retu
 const diffDays = (a,b) => Math.round((parse(b) - parse(a)) / 864e5);
 const today = () => iso(new Date());
 const fmtDate = (s,opt={month:'short',day:'numeric'}) => parse(s).toLocaleDateString('en-US', opt);
-function startDate(){ return S.cfg.start || today(); }
+function startDate(){ return S.cfg.start || CHALLENGE_START; }
 function dayNum(date){ return diffDays(startDate(), date) + 1; }   // 1..30 inside challenge
 function dateFor(n){ return iso(addDays(parse(startDate()), n-1)); }
 function curDay(){ return dayNum(today()); }
@@ -465,8 +478,7 @@ function runnerCard(who){
 function renderHome(){
   const n = curDay(), t = today();
   let eyebrow, big, sub;
-  if(!S.cfg.start){ eyebrow='Ready When You Are'; big=`<b>Day 0</b>`; sub='Set your start date in Settings, or just log your first run — the challenge starts today.'; }
-  else if(n < 1){ eyebrow='Starting Soon'; big=`${1-n}<span>${1-n===1?'day':'days'} to go</span>`; sub='Challenge kicks off '+fmtDate(startDate(),{weekday:'long',month:'long',day:'numeric'}); }
+  if(n < 1){ eyebrow='Starting Soon'; big=`${1-n}<span>${1-n===1?'day':'days'} to go</span>`; sub='Challenge kicks off '+fmtDate(startDate(),{weekday:'long',month:'long',day:'numeric'}); }
   else if(n > DAYS){ eyebrow='Challenge Complete'; big=`30<span>/ 30</span>`; sub='Finished '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric'})+'. Check Stats for the final scoreboard.'; }
   else { eyebrow='Day '+n+' · '+fmtDate(t,{weekday:'long',month:'short',day:'numeric'}); big=`${n}<span>/ 30</span>`; sub = (DAYS-n===0) ? 'Final day. Finish strong.' : (DAYS-n)+' days left · ends '+fmtDate(dateFor(DAYS)); }
 
@@ -496,7 +508,7 @@ function renderHome(){
       <div class="big">${big}</div>
       <div class="sub">${sub}</div>
       <div class="track">${track}</div>
-      <div class="track-legend"><span>${S.cfg.start?fmtDate(startDate()):'Day 1'}</span><span style="color:var(--o)">● Oliver</span><span style="color:var(--a)">● Alexis</span><span>${S.cfg.start?fmtDate(dateFor(DAYS)):'Day 30'}</span></div>
+      <div class="track-legend"><span>${fmtDate(startDate())}</span><span style="color:var(--o)">● Oliver</span><span style="color:var(--a)">● Alexis</span><span>${fmtDate(dateFor(DAYS))}</span></div>
     </div>
     <div class="duel">${runnerCard('oliver')}${runnerCard('alexis')}</div>
     ${call}
@@ -533,7 +545,7 @@ function postHTML(l){
     </div>
     ${(l.type||l.feel)?`<div class="post-tags">${l.type?`<span class="tag c">${esc(l.type)}</span>`:''}${l.feel?`<span class="tag">${FEELS[l.feel-1][0]} ${FEELS[l.feel-1][1]}</span>`:''}</div>`:''}
     ${l.notes?`<div class="post-notes">${esc(l.notes)}</div>`:''}
-    ${l.hasPhoto?`<div class="post-photo ph" data-photo="${l.id}">Loading Photo…</div>`:''}
+    ${l.hasPhoto?`<div class="post-photo ph" data-photo="${l.id}">Loading Photos…</div>`:''}
     <div class="post-actions">${reacts}</div>
     <div class="comments">${comments}
       ${S.me?`<form class="cmt-in" onsubmit="addComment(event,'${l.id}')"><input placeholder="${mine?'Add a note…':'Cheer ' + p.name + ' on…'}" maxlength="280"><button>Send</button></form>`:''}
@@ -677,34 +689,48 @@ async function drawMap(){
 function hydratePhotos(){
   document.querySelectorAll('[data-photo]').forEach(async el=>{
     const id = el.dataset.photo;
-    const src = await getPhoto(id);
+    const list = await getPhoto(id);
     if(!el.isConnected) return;
-    if(src){ const img = new Image(); img.className='post-photo'; img.src = src; img.alt=''; img.onclick=()=>viewPhoto(src); el.replaceWith(img); }
-    else el.textContent = 'Photo Syncing…';
+    if(!list.length){ el.textContent = 'Photos Syncing…'; return; }
+    const g = document.createElement('div'); g.className = 'gal';
+    g.innerHTML = `<div class="gal-track">${list.map((src,i)=>`<img src="${src}" alt="" onclick="viewPhoto('${id}',${i})">`).join('')}</div>${list.length>1?`<span class="gal-n">1/${list.length}</span>`:''}`;
+    const tr = g.firstChild, n = g.querySelector('.gal-n');
+    if(n) tr.addEventListener('scroll', ()=>{ n.textContent = (Math.round(tr.scrollLeft/tr.clientWidth)+1)+'/'+list.length; }, {passive:true});
+    el.replaceWith(g);
   });
 }
+// photos live in run_photos/{runId} as {list:[dataURL,…]} so the run feed stays light
 async function getPhoto(id){
   if(S.photos[id]) return S.photos[id];
   const local = LS.get('rc_ph_'+id, null);
   if(local) return S.photos[id] = local;
-  if(!syncOn) return null;
+  if(!syncOn) return [];
   try{
     const snap = await FS.getDoc(FS.doc(db,'run_photos',id));
-    if(snap.exists()){ const d = snap.data().data; S.photos[id] = d; return d; }
+    if(snap.exists()){ const d = snap.data(); return S.photos[id] = d.list || (d.data ? [d.data] : []); }
   }catch(e){}
-  return null;
+  return [];
 }
-function viewPhoto(src){ openSheet(`<h3>Photo <button onclick="closeSheet()">Close</button></h3><img src="${src}" style="width:100%;border-radius:18px;display:block">`); }
+function viewPhoto(id, i){
+  const list = S.photos[id] || [];
+  openSheet(`<h3>Photos <button onclick="closeSheet()">Close</button></h3>${list.map(src=>`<img src="${src}" style="width:100%;border-radius:18px;display:block;margin-bottom:10px">`).join('')}`);
+  const img = $('#sheetBody').querySelectorAll('img')[i]; if(img) setTimeout(()=>img.scrollIntoView({block:'start'}), 360);
+}
 function compress(file){
   return new Promise((res,rej)=>{
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = ()=>{
-      const max = 1000; let {width:w, height:h} = img;
-      if(w>max||h>max){ const k = max/Math.max(w,h); w = Math.round(w*k); h = Math.round(h*k); }
-      const c = document.createElement('canvas'); c.width = w; c.height = h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      let q = .72, out = c.toDataURL('image/jpeg', q);
-      while(out.length > 700000 && q > .3){ q -= .1; out = c.toDataURL('image/jpeg', q); }
+      // keep each photo under ~180KB so all MAX_PHOTOS fit in one synced record
+      let max = 1000, q = .72, out = '';
+      for(let tries=0; tries<8; tries++){
+        let {width:w, height:h} = img;
+        if(w>max||h>max){ const k = max/Math.max(w,h); w = Math.round(w*k); h = Math.round(h*k); }
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        out = c.toDataURL('image/jpeg', q);
+        if(out.length <= 180000) break;
+        if(q > .5) q -= .1; else max = Math.round(max*.85);
+      }
       URL.revokeObjectURL(url); res(out);
     };
     img.onerror = rej; img.src = url;
@@ -722,7 +748,7 @@ function openLog(id, date){
   if(!S.me) return pickWho();
   const ex = id ? S.logs[id] : null;
   const now = new Date();
-  draft = ex ? {...ex, photo: undefined} : {id: uid(), who:S.me, date: date || today(), time: pad(now.getHours())+':'+pad(now.getMinutes()), dist:'', secs:0, type:'', feel:0, loc:'', lat:null, lng:null, notes:'', hasPhoto:false};
+  draft = ex ? {...ex, photos: []} : {id: uid(), who:S.me, date: date || today(), time: pad(now.getHours())+':'+pad(now.getMinutes()), dist:'', secs:0, type:'', feel:0, loc:'', lat:null, lng:null, notes:'', hasPhoto:false, photos:[]};
   const h = Math.floor((draft.secs||0)/3600), m = Math.floor((draft.secs||0)%3600/60), s = (draft.secs||0)%60;
   openSheet(`
     <h3>${ex?'Edit Run':'Log A Run'} <button onclick="closeSheet()">Cancel</button></h3>
@@ -749,8 +775,8 @@ function openLog(id, date){
       </div>
       <div class="hint" id="geoHint">${draft.lat!=null?'📍 Pinned on the run map':'Tap the pin to fill this in and drop it on the run map.'}</div>
     </div>
-    <div class="fld"><label>Photo</label>
-      <div class="drop" id="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>Add A Photo — Selfie, View, Watch Screen</div>
+    <div class="fld"><label>Photos <span style="text-transform:none;letter-spacing:0;font-weight:600">· up to ${MAX_PHOTOS}</span></label>
+      <div id="drop"></div>
     </div>
     <div class="fld"><label>Notes</label><textarea class="in" id="fNotes" placeholder="How it went, what you saw, what hurt…" maxlength="1500">${esc(draft.notes)}</textarea></div>
     <button class="btn pri full" id="saveRun">${ex?'Save Changes':'Post Run'}</button>
@@ -764,19 +790,27 @@ function openLog(id, date){
   $('#fType').onclick = e=>{ const b = e.target.closest('.opt'); if(!b) return; draft.type = draft.type===b.dataset.v ? '' : b.dataset.v; $('#fType').querySelectorAll('.opt').forEach(x=>x.classList.toggle('on', x.dataset.v===draft.type)); };
   $('#fFeel').onclick = e=>{ const b = e.target.closest('button'); if(!b) return; draft.feel = +b.dataset.v; $('#fFeel').querySelectorAll('button').forEach(x=>x.classList.toggle('on', +x.dataset.v===draft.feel)); };
   $('#geoBtn').onclick = useLocation;
-  $('#drop').onclick = e=>{ if(e.target.closest('.x')) return; e.preventDefault(); $('#photoIn').click(); };
-  if(ex && ex.hasPhoto) getPhoto(ex.id).then(src=>{ if(src && draft && draft.id===ex.id){ draft.photo = src; showDrop(); } });
+  showDrop();
+  if(ex && ex.hasPhoto) getPhoto(ex.id).then(list=>{ if(list.length && draft && draft.id===ex.id && !draft.photosChanged){ draft.photos = [...list]; showDrop(); } });
   $('#saveRun').onclick = saveRun;
 }
 function showDrop(){
   const d = $('#drop'); if(!d) return;
-  if(draft.photo){ d.classList.add('has'); d.innerHTML = `<img src="${draft.photo}" alt=""><span class="x" onclick="event.preventDefault();event.stopPropagation();draft.photo=null;draft.hasPhoto=false;draft.photoRemoved=true;showDrop()">✕</span>`; }
-  else { d.classList.remove('has'); d.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>Add A Photo — Selfie, View, Watch Screen`; }
+  const cam = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="3"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg>`;
+  if(!draft.photos.length){ d.className = 'drop'; d.innerHTML = cam + 'Add Photos — Selfies, Views, Watch Screen'; d.onclick = ()=>$('#photoIn').click(); return; }
+  d.className = 'thumbs'; d.onclick = null;
+  d.innerHTML = draft.photos.map((src,i)=>`<div class="th"><img src="${src}" alt=""><button type="button" class="x" onclick="removeDraftPhoto(${i})">✕</button></div>`).join('')
+    + (draft.photos.length < MAX_PHOTOS ? `<button type="button" class="add" onclick="$('#photoIn').click()">${cam}Add More</button>` : '');
 }
+function removeDraftPhoto(i){ draft.photos.splice(i,1); draft.photosChanged = true; showDrop(); }
 $('#photoIn').onchange = async e=>{
-  const f = e.target.files[0]; e.target.value = '';
-  if(!f || !draft) return;
-  try{ draft.photo = await compress(f); draft.photoChanged = true; showDrop(); }catch(err){ toast('Couldn’t read that photo'); }
+  const files = [...e.target.files]; e.target.value = '';
+  if(!files.length || !draft) return;
+  const room = MAX_PHOTOS - draft.photos.length;
+  if(files.length > room) toast(`Only ${MAX_PHOTOS} photos per run — added the first ${room}`);
+  for(const f of files.slice(0, room)){
+    try{ draft.photos.push(await compress(f)); draft.photosChanged = true; showDrop(); }catch(err){ toast('Couldn’t read one of those photos'); }
+  }
 };
 function useLocation(){
   if(!navigator.geolocation) return toast('Location isn’t available here');
@@ -809,15 +843,16 @@ function saveRun(){
     dist: Math.round(dist*100)/100, secs, type: draft.type||'', feel: draft.feel||0,
     loc: $('#fLoc').value.trim(), lat: draft.lat ?? null, lng: draft.lng ?? null,
     notes: $('#fNotes').value.trim(),
-    hasPhoto: !!(draft.photo || (draft.hasPhoto && !draft.photoRemoved)),
+    hasPhoto: draft.photosChanged ? draft.photos.length > 0 : !!draft.hasPhoto,
     cheers: prev.cheers || {}, comments: prev.comments || [],
     createdAt: prev.createdAt || Date.now(), updatedAt: Date.now()
   };
   S.logs[log.id] = log; saveLocal();
-  if(draft.photoChanged && draft.photo){ S.photos[log.id] = draft.photo; LS.set('rc_ph_'+log.id, draft.photo); pushPhoto(log.id, draft.photo); }
-  if(draft.photoRemoved && !draft.photo){ delete S.photos[log.id]; try{localStorage.removeItem('rc_ph_'+log.id);}catch(e){} delPhoto(log.id); }
+  if(draft.photosChanged){
+    if(draft.photos.length){ S.photos[log.id] = [...draft.photos]; LS.set('rc_ph_'+log.id, S.photos[log.id]); pushPhoto(log.id, S.photos[log.id]); }
+    else { delete S.photos[log.id]; try{localStorage.removeItem('rc_ph_'+log.id);}catch(e){} delPhoto(log.id); }
+  }
   pushLog(log);
-  if(!S.cfg.start){ S.cfg.start = date; pushCfg(); }
   closeSheet(); render();
   if(isNew) celebrate(log, before);
   else toast('✓ Run Updated');
@@ -1028,7 +1063,7 @@ async function initCloud(){
 }
 function syncErr(err){ console.warn('sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Offline'); }
 function pushLog(l){ if(syncOn) FS.setDoc(FS.doc(db,'run_logs',l.id), l).catch(e=>syncErr(e)); }
-function pushPhoto(id, data){ if(syncOn) FS.setDoc(FS.doc(db,'run_photos',id), {data, at:Date.now()}).catch(e=>syncErr(e)); }
+function pushPhoto(id, list){ if(syncOn) FS.setDoc(FS.doc(db,'run_photos',id), {list, at:Date.now()}).catch(e=>syncErr(e)); }
 function delPhoto(id){ if(syncOn) FS.deleteDoc(FS.doc(db,'run_photos',id)).catch(()=>{}); }
 function pushCfg(){
   S.cfg.updatedAt = Date.now(); saveLocal();
