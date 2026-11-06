@@ -285,7 +285,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:90;width:100%;heigh
       <div class="name">Run Club<small id="brandSub">Oliver × Alexis</small></div>
     </div>
     <div class="top-r">
-      <div class="pill" id="syncPill"><span class="dot"></span><span id="syncTxt">Local</span></div>
+      <div class="pill" id="syncPill" onclick="syncNow(true)" style="cursor:pointer"><span class="dot"></span><span id="syncTxt">Local</span></div>
       <button class="me-chip" id="meChip" aria-label="Settings"></button>
     </div>
   </header>
@@ -849,7 +849,7 @@ function saveRun(){
   };
   S.logs[log.id] = log; saveLocal();
   if(draft.photosChanged){
-    if(draft.photos.length){ S.photos[log.id] = [...draft.photos]; LS.set('rc_ph_'+log.id, S.photos[log.id]); pushPhoto(log.id, S.photos[log.id]); }
+    if(draft.photos.length){ S.photos[log.id] = [...draft.photos]; holdPhoto(log.id, S.photos[log.id]); pushPhoto(log.id, S.photos[log.id]); }
     else { delete S.photos[log.id]; try{localStorage.removeItem('rc_ph_'+log.id);}catch(e){} delPhoto(log.id); }
   }
   pushLog(log);
@@ -1023,10 +1023,14 @@ async function initCloud(){
     ]);
     FS = store;
     const a = app.initializeApp(FB);
-    try{ db = store.initializeFirestore(a, {localCache: store.persistentLocalCache({tabManager: store.persistentMultipleTabManager()})}); }
+    // Memory-only cache: the app keeps its own copy in localStorage, and Firestore's on-disk
+    // cache is what tends to wedge on iPhone home-screen apps (nothing syncs, no error shown).
+    try{ db = store.initializeFirestore(a, {localCache: store.memoryLocalCache(), experimentalAutoDetectLongPolling: true}); }
     catch(e){ db = store.getFirestore(a); }
     syncOn = true; syncState('', 'Connecting');
     let first = true;
+    // one-time cleanup: the old version left Firestore's disk cache behind, which can be stuck
+    try{ indexedDB.deleteDatabase('firestore/[DEFAULT]/tasks-oj/main'); }catch(e){}
 
     store.onSnapshot(store.doc(db,'run_config','main'), snap=>{
       const d = snap.data();
@@ -1050,28 +1054,62 @@ async function initCloud(){
           if(isNewFromThem) toast(`<span style="font-size:22px">🏃</span><span><b>${P[d.who]?.name}</b> just logged ${mi(d.dist)} mi${d.loc?' at '+esc(d.loc):''}</span>`, 5000);
         }
       });
-      // push any runs logged while offline / before sync was allowed
-      if(first && !snap.metadata.fromCache){
-        const ids = new Set(snap.docs.map(d=>d.id));
-        Object.values(S.logs).forEach(l=>{ if(!ids.has(l.id) && l.who===S.me){ pushLog(l); const ph = LS.get('rc_ph_'+l.id,null); if(ph) pushPhoto(l.id, ph); } });
-        first = false;
+      if(!snap.metadata.fromCache){
+        cloudIds = new Set(snap.docs.map(d=>d.id));
+        if(first){ first = false; flushPending(); }
+        lastSync = Date.now();
       }
       if(touched){ saveLocal(); softRender(); }
       if(!snap.metadata.fromCache) syncState(navigator.onLine?'on':'', navigator.onLine?'Synced':'Offline');
     }, err=>syncErr(err));
   }catch(e){ console.warn('cloud off', e); syncState('', 'Local Only'); }
 }
-function syncErr(err){ console.warn('sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Offline'); }
-function pushLog(l){ if(syncOn) FS.setDoc(FS.doc(db,'run_logs',l.id), l).catch(e=>syncErr(e)); }
-function pushPhoto(id, list){ if(syncOn) FS.setDoc(FS.doc(db,'run_photos',id), {list, at:Date.now()}).catch(e=>syncErr(e)); }
+let cloudIds = new Set(), lastSync = 0, flushing = false;
+// Re-send anything of mine the cloud is missing or has an older copy of (failed saves, offline runs, edits).
+async function flushPending(){
+  if(!syncOn || flushing) return; flushing = true;
+  try{
+    pendingIds().forEach(id=>{ if(!S.logs[id]) markPending(id, false); });
+    for(const l of Object.values(S.logs)){
+      if(l.who !== S.me) continue;
+      if(!cloudIds.has(l.id) || pendingIds().has(l.id)) await pushLog(l);
+      const ph = LS.get('rc_ph_'+l.id, null);
+      if(ph) await pushPhoto(l.id, ph);
+    }
+  } finally { flushing = false; }
+}
+function pendingIds(){ return new Set(LS.get('rc_pending', [])); }
+function markPending(id, on){ const s = pendingIds(); on ? s.add(id) : s.delete(id); LS.set('rc_pending', [...s]); }
+// photos stay on the phone only until they've reached the cloud, so they can't fill up phone storage
+function holdPhoto(id, list){ if(!LS.set('rc_ph_'+id, list)) console.warn('photo not kept locally (storage full)'); }
+function syncErr(err){ console.warn('sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Not Synced · Tap'); }
+function withTimeout(p, ms){ return Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}), ms))]); }
+async function pushLog(l){
+  if(!syncOn) return; markPending(l.id, true);
+  try{ await withTimeout(FS.setDoc(FS.doc(db,'run_logs',l.id), l), 20000); markPending(l.id, false); cloudIds.add(l.id); }
+  catch(e){ syncErr(e); }
+}
+async function pushPhoto(id, list){
+  if(!syncOn) return;
+  try{ await withTimeout(FS.setDoc(FS.doc(db,'run_photos',id), {list, at:Date.now()}), 45000); try{localStorage.removeItem('rc_ph_'+id);}catch(e){} }
+  catch(e){ syncErr(e); }
+}
+// Kick a stalled connection (iOS often drops it while the app is in the background) and resend.
+async function syncNow(manual){
+  if(!syncOn){ if(manual) toast('Cloud sync couldn’t start — check your connection and reopen the app'); return; }
+  syncState('', 'Syncing');
+  try{ await FS.disableNetwork(db); await FS.enableNetwork(db); }catch(e){}
+  await flushPending();
+  if(manual) toast(pendingIds().size ? 'Some runs still haven’t synced — try again in a moment' : '✓ All Synced');
+}
 function delPhoto(id){ if(syncOn) FS.deleteDoc(FS.doc(db,'run_photos',id)).catch(()=>{}); }
 function pushCfg(){
   S.cfg.updatedAt = Date.now(); saveLocal();
   if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {start:S.cfg.start, updatedAt:S.cfg.updatedAt}, {merge:true}).catch(e=>syncErr(e));
 }
-addEventListener('online', ()=>syncState(syncOn?'on':'', syncOn?'Synced':'Local Only'));
+addEventListener('online', ()=>{ if(syncOn) syncNow(false); else syncState('', 'Local Only'); });
 addEventListener('offline', ()=>syncState('', 'Offline'));
-document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ softRender(); checkNudge(); } });
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ softRender(); checkNudge(); if(syncOn) syncNow(false); } });
 
 /* ============================== boot ============================== */
 applyMe();
