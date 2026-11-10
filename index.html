@@ -79,6 +79,7 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .track i b.o{top:0;background:var(--o)} .track i b.a{bottom:0;background:var(--a)}
 .track i.today{outline:2px solid #fff;outline-offset:1px}
 .track i.future{opacity:.45}
+.track.long i{height:13px;border-radius:3px}
 .track-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:7px;font-weight:600}
 
 /* duel */
@@ -281,7 +282,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:90;width:100%;heigh
 <div class="app" id="app">
   <header class="top">
     <div class="brand">
-      <div class="logo">30</div>
+      <div class="logo" id="logoN">30</div>
       <div class="name">Run Club<small id="brandSub">Oliver × Alexis</small></div>
     </div>
     <div class="top-r">
@@ -302,7 +303,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:90;width:100%;heigh
 
 <nav class="tabs"><div class="bar">
   <button class="tab on" data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
-  <button class="tab" data-v="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>30 Days</button>
+  <button class="tab" data-v="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span id="tabDays">30 Days</span></button>
   <button class="fab" id="fab" aria-label="Log a run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   <button class="tab" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Feed</button>
   <button class="tab" data-v="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
@@ -321,7 +322,8 @@ const P = {
   alexis:{key:'alexis', name:'Alexis', init:'A', cls:'a', c:'#ff4f9a', ink:'#1a0a12'}
 };
 const OTHER = {oliver:'alexis', alexis:'oliver'};
-const DAYS = 30;
+const DEFAULT_DAYS = 30;
+let DAYS = DEFAULT_DAYS;          // challenge length; can be extended (run_config/main.days)
 const CHALLENGE_START = '2026-11-05';   // Day 1
 const MAX_PHOTOS = 5;
 const TYPES = ['Easy','Tempo','Long','Intervals','Hills','Trail','Treadmill','Race','Recovery'];
@@ -345,7 +347,7 @@ const BADGES = [
   {id:'first',  e:'👟', n:'First Steps',  d:'Log your first run'},
   {id:'s3',     e:'🎩', n:'Hat Trick',    d:'3-day streak'},
   {id:'s7',     e:'🗓️', n:'Week Warrior', d:'7-day streak'},
-  {id:'half',   e:'⛰️', n:'Halfway Hero', d:'Run 15 of 30 days'},
+  {id:'half',   e:'⛰️', n:'Halfway Hero', d:'Run {half} of {days} days'},
   {id:'s14',    e:'⚡', n:'Unbreakable',  d:'14-day streak'},
   {id:'10k',    e:'🏅', n:'10K Club',     d:'One run of 6.2+ mi'},
   {id:'mara',   e:'🏛️', n:'Marathoner',   d:'26.2 total miles'},
@@ -353,7 +355,7 @@ const BADGES = [
   {id:'speed',  e:'🐆', n:'Speedster',    d:'Sub-8:00 pace, 1+ mi'},
   {id:'early',  e:'🌅', n:'Early Bird',   d:'Run before 7 AM'},
   {id:'owl',    e:'🦉', n:'Night Owl',    d:'Run after 8 PM'},
-  {id:'perfect',e:'👑', n:'Perfect 30',   d:'All 30 days, no misses'}
+  {id:'perfect',e:'👑', n:'Perfect {days}',   d:'All {days} days, no misses'}
 ];
 
 /* ============================== state ============================== */
@@ -370,6 +372,9 @@ const S = {
   photos: {},
   seenNudge: LS.get('rc_seenNudge', 0)
 };
+function syncDays(){ DAYS = Math.max(1, Math.round(+S.cfg.days || DEFAULT_DAYS)); }
+const bt = s => String(s).replace(/\{days\}/g, DAYS).replace(/\{half\}/g, Math.ceil(DAYS/2));
+syncDays();
 function saveLocal(){ LS.set('rc_logs', S.logs); LS.set('rc_cfg', S.cfg); }
 
 /* ============================== dates ============================== */
@@ -419,7 +424,7 @@ function earned(who){
   if(ls.length) set.add('first');
   const b = bestStreak(who);
   if(b>=3) set.add('s3'); if(b>=7) set.add('s7'); if(b>=14) set.add('s14');
-  if(daysRun(who)>=15) set.add('half');
+  if(daysRun(who)>=Math.ceil(DAYS/2)) set.add('half');
   if(daysRun(who)>=DAYS) set.add('perfect');
   const t = totalMi(who);
   if(t>=26.2) set.add('mara'); if(t>=50) set.add('fifty');
@@ -479,8 +484,9 @@ function renderHome(){
   const n = curDay(), t = today();
   let eyebrow, big, sub;
   if(n < 1){ eyebrow='Starting Soon'; big=`${1-n}<span>${1-n===1?'day':'days'} to go</span>`; sub='Challenge kicks off '+fmtDate(startDate(),{weekday:'long',month:'long',day:'numeric'}); }
-  else if(n > DAYS){ eyebrow='Challenge Complete'; big=`30<span>/ 30</span>`; sub='Finished '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric'})+'. Check Stats for the final scoreboard.'; }
-  else { eyebrow='Day '+n+' · '+fmtDate(t,{weekday:'long',month:'short',day:'numeric'}); big=`${n}<span>/ 30</span>`; sub = (DAYS-n===0) ? 'Final day. Finish strong.' : (DAYS-n)+' days left · ends '+fmtDate(dateFor(DAYS)); }
+  else if(n > DAYS){ eyebrow='Challenge Complete'; big=`${DAYS}<span>/ ${DAYS}</span>`; sub='Finished '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric'})+'. Check Stats for the final scoreboard, or keep it going.<button class="btn pri full" style="margin-top:14px" onclick="openExtend()">Extend The Challenge</button>'; }
+  else { eyebrow='Day '+n+' · '+fmtDate(t,{weekday:'long',month:'short',day:'numeric'}); big=`${n}<span>/ ${DAYS}</span>`; sub = (DAYS-n===0) ? 'Final day. Finish strong.' : (DAYS-n)+' days left · ends '+fmtDate(dateFor(DAYS));
+    if(DAYS-n<=3) sub += ' · <a href="#" onclick="openExtend();return false" style="color:var(--me,#fff);font-weight:700">Keep Going? Extend</a>'; }
 
   let track = '';
   for(let i=1;i<=DAYS;i++){
@@ -507,7 +513,7 @@ function renderHome(){
       <div class="eyebrow">${eyebrow}</div>
       <div class="big">${big}</div>
       <div class="sub">${sub}</div>
-      <div class="track">${track}</div>
+      <div class="track ${DAYS>30?'long':''}" style="grid-template-columns:repeat(${Math.min(DAYS,30)},1fr)">${track}</div>
       <div class="track-legend"><span>${fmtDate(startDate())}</span><span style="color:var(--o)">● Oliver</span><span style="color:var(--a)">● Alexis</span><span>${fmtDate(dateFor(DAYS))}</span></div>
     </div>
     <div class="duel">${runnerCard('oliver')}${runnerCard('alexis')}</div>
@@ -578,7 +584,7 @@ function renderCal(){
   }
   const both = Array.from({length:DAYS},(_,i)=>dateFor(i+1)).filter(d=>ranOn('oliver',d)&&ranOn('alexis',d)).length;
   $('#v-cal').innerHTML = `
-    <div class="sec-h" style="margin-top:4px"><h2>The 30 Squares</h2><span style="font-size:13px;color:var(--tx2);font-weight:600">⭐ ${both} Together</span></div>
+    <div class="sec-h" style="margin-top:4px"><h2>The ${DAYS} Squares</h2><span style="font-size:13px;color:var(--tx2);font-weight:600">⭐ ${both} Together</span></div>
     <div class="cal">${cells}</div>
     <div class="legend">
       <span><i style="background:var(--o)"></i>Oliver Ran</span>
@@ -629,7 +635,7 @@ function chartSVG(){
   }).join('');
   let grid = '';
   [0, .5, 1].forEach(f=>{ const v = max/1.1*f; grid += `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${pl-6}" y="${y(v)+3.5}" fill="#6b7083" font-size="9" text-anchor="end" font-weight="600">${Math.round(v)}</text>`; });
-  [1,10,20,30].forEach(d=>{ grid += `<text x="${x(d-1)}" y="${H-6}" fill="#6b7083" font-size="9" text-anchor="middle" font-weight="600">D${d}</text>`; });
+  [...new Set([1, Math.round(DAYS/3), Math.round(DAYS*2/3), DAYS])].filter(d=>d>=1).forEach(d=>{ grid += `<text x="${x(d-1)}" y="${H-6}" fill="#6b7083" font-size="9" text-anchor="middle" font-weight="600">D${d}</text>`; });
   return `<svg viewBox="0 0 ${W} ${H}"><defs>
     <linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8ff3d" stop-opacity=".28"/><stop offset="1" stop-color="#c8ff3d" stop-opacity="0"/></linearGradient>
     <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4f9a" stop-opacity=".28"/><stop offset="1" stop-color="#ff4f9a" stop-opacity="0"/></linearGradient>
@@ -659,7 +665,7 @@ function renderStats(){
     <div class="sec-h"><h2>Badges</h2></div>
     <div class="badges">${BADGES.map(b=>{
       const go = eo.has(b.id), ga = ea.has(b.id);
-      return `<div class="badge ${go||ga?'earned':''}"><div class="e">${b.e}</div><b>${b.n}</b><small>${b.d}</small><div class="got">${go?'<i class="o">O</i>':''}${ga?'<i class="a">A</i>':''}</div></div>`;
+      return `<div class="badge ${go||ga?'earned':''}"><div class="e">${b.e}</div><b>${bt(b.n)}</b><small>${bt(b.d)}</small><div class="got">${go?'<i class="o">O</i>':''}${ga?'<i class="a">A</i>':''}</div></div>`;
     }).join('')}</div>`;
   if(hasGeo) drawMap();
 }
@@ -873,7 +879,7 @@ function celebrate(log, before){
   setTimeout(()=>openSheet(`<div class="celebrate">
     <div class="e">${fresh.length ? fresh[0].e : '🔥'}</div>
     <h4>${fresh.length ? 'Badge Unlocked: '+fresh[0].n : mi(log.dist)+' Miles Done'}</h4>
-    <p>${fresh.length ? fresh.map(b=>b.d).join(' · ')+'<br>' : ''}${line}</p>
+    <p>${fresh.length ? fresh.map(b=>bt(b.d)).join(' · ')+'<br>' : ''}${line}</p>
     <button class="btn pri full" onclick="closeSheet()">Let’s Go</button>
   </div>`), 350);
 }
@@ -939,7 +945,10 @@ function openSettings(){
   openSheet(`<h3>Settings <button onclick="closeSheet()">Done</button></h3>
     <div class="fld settings-list"><label>Challenge Start Date</label>
       <input class="in" type="date" id="sStart" value="${S.cfg.start||''}">
-      <div class="small-note">Day 1 of 30. Changing it updates for both of you. ${S.cfg.start?'Runs through '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric',year:'numeric'})+'.':''}</div>
+      <div class="small-note">Day 1 of ${DAYS}. Changing it updates for both of you. ${S.cfg.start?'Runs through '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric',year:'numeric'})+'.':''}</div>
+    </div>
+    <div class="fld"><label>Challenge Length</label>
+      <button class="btn full" onclick="openExtend()">${DAYS} Days · Change Or Extend</button>
     </div>
     <div class="fld"><label>This Phone Belongs To</label>
       <div class="opts">${['oliver','alexis'].map(w=>`<button class="opt ${S.me===w?'on':''}" onclick="setMe('${w}');openSettings()">${P[w].name}</button>`).join('')}</div>
@@ -952,8 +961,32 @@ function openSettings(){
     </div>`);
   $('#sStart').onchange = e=>{ if(!e.target.value) return; S.cfg.start = e.target.value; pushCfg(); saveLocal(); render(); toast('Start date set: '+fmtDate(S.cfg.start,{month:'long',day:'numeric'})); openSettings(); };
 }
+/* ---- extend the challenge: pick a new total length; same start date, so every run so far still counts ---- */
+function openExtend(){
+  const minD = Math.max(7, curDay());
+  const opts = [...new Set([DAYS+30, 60, 90, 120, 180, 365])].filter(n=>n>DAYS).sort((a,b)=>a-b);
+  const endOf = n => fmtDate(iso(addDays(parse(startDate()), n-1)),{month:'long',day:'numeric',year:'numeric'});
+  openSheet(`<h3>Keep The Club Going <button onclick="closeSheet()">Close</button></h3>
+    <p class="small-note" style="margin-top:-8px;margin-bottom:14px">Right now it's <b>${DAYS} days</b>. Pick a new total. Same Day 1, so every run, streak and badge so far still counts. It changes for both of you.</p>
+    <div class="opts">${opts.map(n=>`<button class="opt" onclick="setDays(${n})">${n} Days<br><small style="opacity:.7;font-weight:500">to ${endOf(n)}</small></button>`).join('')}</div>
+    <div class="fld" style="margin-top:16px"><label>Custom Number Of Days</label>
+      <input class="in" type="number" inputmode="numeric" id="xDays" min="${minD}" max="1000" placeholder="e.g. 75">
+      <div class="small-note" id="xEnd">Total days from Day 1 (${fmtDate(startDate(),{month:'short',day:'numeric'})}).</div>
+      <button class="btn pri full" style="margin-top:10px" onclick="setDays(+$('#xDays').value)">Set Custom Length</button>
+    </div>`);
+  $('#xDays').oninput = e=>{ const n = +e.target.value; $('#xEnd').textContent = n>=minD ? 'Ends '+endOf(n)+'.' : 'At least '+minD+' days.'; };
+}
+function setDays(n){
+  n = Math.round(+n||0);
+  const minD = Math.max(7, curDay());
+  if(n < minD || n > 1000){ toast('Pick between '+minD+' and 1000 days'); return; }
+  const longer = n > DAYS;
+  S.cfg.days = n; syncDays(); pushCfg(); closeSheet(); render();
+  toast((longer?'🔥 Extended to ':'Set to ')+n+' days · ends '+fmtDate(dateFor(n),{month:'short',day:'numeric'}));
+  if(longer && typeof confetti==='function') try{ confetti(S.me?P[S.me].c:'#c8ff3d'); }catch(e){}
+}
 async function shareApp(){
-  const data = {title:'30 Day Run Club', text:'Our 30-day running challenge — log your runs here 🏃', url: location.href.split('#')[0]};
+  const data = {title:DAYS+' Day Run Club', text:'Our '+DAYS+'-day running challenge — log your runs here 🏃', url: location.href.split('#')[0]};
   if(navigator.share){ try{ await navigator.share(data); }catch(e){} }
   else { try{ await navigator.clipboard.writeText(data.url); toast('Link copied'); }catch(e){ prompt('Copy this link', data.url); } }
 }
@@ -984,7 +1017,14 @@ function go(v){
 }
 document.querySelectorAll('.tab').forEach(t=>t.onclick = ()=>go(t.dataset.v));
 $('#fab').onclick = ()=>openLog();
+function paintChrome(){
+  syncDays();
+  const l = $('#logoN'); if(l){ l.textContent = DAYS; l.style.fontSize = DAYS>99 ? '13px' : ''; }
+  const t = $('#tabDays'); if(t) t.textContent = DAYS+' Days';
+  document.title = DAYS+' Day Run Club';
+}
 function render(){
+  paintChrome();
   ({home:renderHome, cal:renderCal, feed:renderFeed, stats:renderStats})[S.view]();
 }
 // re-render without losing an in-progress comment or the sheet
@@ -994,6 +1034,7 @@ function softRender(){
   softT = setTimeout(()=>{
     const a = document.activeElement;
     if(a && a.closest && a.closest('.cmt-in') && a.value) return; // don't wipe a half-typed comment
+    paintChrome();
     if(S.view==='stats') return renderStats();
     render();
     if($('#sheet').classList.contains('on') && !draft){
@@ -1105,7 +1146,7 @@ async function syncNow(manual){
 function delPhoto(id){ if(syncOn) FS.deleteDoc(FS.doc(db,'run_photos',id)).catch(()=>{}); }
 function pushCfg(){
   S.cfg.updatedAt = Date.now(); saveLocal();
-  if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {start:S.cfg.start, updatedAt:S.cfg.updatedAt}, {merge:true}).catch(e=>syncErr(e));
+  if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {start:S.cfg.start, days:DAYS, updatedAt:S.cfg.updatedAt}, {merge:true}).catch(e=>syncErr(e));
 }
 addEventListener('online', ()=>{ if(syncOn) syncNow(false); else syncState('', 'Local Only'); });
 addEventListener('offline', ()=>syncState('', 'Offline'));
