@@ -1,5 +1,5 @@
 // Network-first for the app itself (so updates show up right away), cache as offline fallback.
-const CACHE = 'runclub-v3';
+const CACHE = 'runclub-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './rc-icon-180.png', './rc-icon-192.png', './rc-icon-512.png'];
 
 self.addEventListener('install', e => {
