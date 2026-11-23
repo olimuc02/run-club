@@ -1,7 +1,7 @@
 {
-  "name": "30 Day Run Club",
+  "name": "Run Club",
   "short_name": "Run Club",
-  "description": "Oliver × Alexis 30-day running challenge",
+  "description": "Oliver × Alexis running club — streaks, breaks and challenges",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

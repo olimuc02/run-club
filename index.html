@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
-<title>30 Day Run Club</title>
+<title>Run Club</title>
 <meta name="theme-color" content="#0a0b0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -21,7 +21,7 @@
   --tx:#f4f5f8; --tx2:#a3a8b8; --tx3:#6b7083;
   --o:#c8ff3d; --o-dim:rgba(200,255,61,.14); --o-ink:#10150a;
   --a:#ff4f9a; --a-dim:rgba(255,79,154,.15); --a-ink:#1a0a12;
-  --gold:#ffc53d; --red:#ff5b5b;
+  --gold:#ffc53d; --red:#ff5b5b; --ice:#7cc8ff;
   --r:20px; --safe-b:env(safe-area-inset-bottom,0px); --safe-t:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -35,24 +35,23 @@ input,textarea,select{font:inherit;color:var(--tx)}
 .app{max-width:540px;margin:0 auto;padding:calc(var(--safe-t) + 14px) 16px calc(var(--safe-b) + 110px)}
 header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .brand{display:flex;align-items:center;gap:10px}
-.brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--o),#7dff9a 50%,var(--a));display:grid;place-items:center;color:#0a0b0f;font-family:Anton;font-size:17px}
+.brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--o),#7dff9a 50%,var(--a));display:grid;place-items:center;color:#0a0b0f;font-family:Anton;font-size:16px}
 .brand .name{font-family:Anton;font-size:22px;line-height:1;text-transform:uppercase}
 .brand .name small{display:block;font-family:Inter;font-size:11px;color:var(--tx3);font-weight:600;letter-spacing:.08em;margin-top:3px}
 .top-r{display:flex;gap:8px;align-items:center}
 .pill{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 10px;font-size:12px;color:var(--tx2);font-weight:600}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--tx3)}
 .dot.on{background:#3ddc84;box-shadow:0 0 8px #3ddc84}.dot.err{background:var(--red)}
-.iconbtn{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
-.iconbtn svg{width:18px;height:18px}
-.me-chip{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px}
+.me-chip{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;background:var(--card);border:1px solid var(--line)}
 
 /* ---------- tab bar ---------- */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:0 12px calc(var(--safe-b) + 10px);pointer-events:none}
 nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 76px 1fr 1fr;align-items:center;background:rgba(22,25,34,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:26px;height:66px;padding:0 6px}
-.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--tx3);padding:8px 0}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--tx3);padding:8px 0;position:relative}
 .tab svg{width:22px;height:22px}
 .tab.on{color:var(--tx)}
 .tab.on svg{color:var(--me,var(--o))}
+.tab .bdg{position:absolute;top:4px;right:calc(50% - 18px);width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--card)}
 .fab{justify-self:center;width:62px;height:62px;border-radius:50%;margin-top:-30px;background:var(--me,var(--o));color:var(--me-ink,#000);display:grid;place-items:center;box-shadow:0 10px 30px -6px var(--me,var(--o)),0 0 0 6px var(--bg)}
 .fab svg{width:28px;height:28px}
 .fab:active{transform:scale(.94)}
@@ -61,40 +60,49 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .view{display:none;animation:fade .25s ease}
 .view.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 12px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 12px;gap:10px}
 .sec-h h2{margin:0;font-family:Anton;font-weight:400;text-transform:uppercase;font-size:20px;letter-spacing:.02em}
-.sec-h a,.sec-h button{font-size:13px;color:var(--tx2);font-weight:600}
+.sec-h a,.sec-h button,.sec-h span{font-size:13px;color:var(--tx2);font-weight:600}
 
 /* hero */
-.hero{position:relative;overflow:hidden;border-radius:26px;padding:22px 20px 20px;background:
-  radial-gradient(120% 90% at 0% 0%,rgba(200,255,61,.22),transparent 55%),
-  radial-gradient(110% 90% at 100% 100%,rgba(255,79,154,.24),transparent 55%),var(--bg2);border:1px solid var(--line)}
-.hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--tx2);text-transform:uppercase}
-.hero .big{font-family:Anton;font-size:84px;line-height:.9;margin:8px 0 2px;display:flex;align-items:flex-end;gap:10px}
-.hero .big span{font-size:30px;color:var(--tx3);margin-bottom:9px}
-.hero .sub{color:var(--tx2);font-size:14px;font-weight:500}
-.track{display:grid;grid-template-columns:repeat(30,1fr);gap:3px;margin-top:18px}
-.track i{height:22px;border-radius:4px;background:rgba(255,255,255,.06);position:relative;overflow:hidden}
-.track i b{position:absolute;left:0;right:0;height:50%}
-.track i b.o{top:0;background:var(--o)} .track i b.a{bottom:0;background:var(--a)}
-.track i.today{outline:2px solid #fff;outline-offset:1px}
-.track i.future{opacity:.45}
-.track.long i{height:13px;border-radius:3px}
-.track-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:7px;font-weight:600}
+.hero{position:relative;overflow:hidden;border-radius:26px;padding:20px 18px 18px;background:
+  radial-gradient(120% 90% at 0% 0%,rgba(200,255,61,.20),transparent 55%),
+  radial-gradient(110% 90% at 100% 100%,rgba(255,79,154,.22),transparent 55%),var(--bg2);border:1px solid var(--line)}
+.hero .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--tx2);text-transform:uppercase;display:flex;justify-content:space-between}
+.wkduel{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;margin:10px 0 4px;gap:8px}
+.wkduel .side b{font-family:Anton;font-weight:400;font-size:54px;line-height:.92;display:block}
+.wkduel .side small{font-size:12px;font-weight:700;color:var(--tx2)}
+.wkduel .side.r{text-align:right}
+.wkduel .vs{font-family:Anton;color:var(--tx3);font-size:18px;padding-bottom:16px}
+.crown{font-size:16px;margin-left:4px;vertical-align:8px}
+.wkbar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.07);gap:3px;margin:10px 0 2px}
+.wkbar i{display:block;height:100%;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.wkbar i.o{background:var(--o)}.wkbar i.a{background:var(--a)}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px}
+.wd{text-align:center}
+.wd .sq{height:40px;border-radius:9px;background:rgba(255,255,255,.06);position:relative;overflow:hidden;display:grid;grid-template-rows:1fr 1fr}
+.wd .sq i{display:block}
+.wd .sq i.o{background:var(--o)}.wd .sq i.a{background:var(--a)}
+.brk{background:repeating-linear-gradient(135deg,rgba(124,200,255,.38) 0 3px,rgba(124,200,255,.08) 3px 7px)!important}
+.wd small{display:block;font-size:10.5px;font-weight:700;color:var(--tx3);margin-top:5px}
+.wd.today .sq{outline:2px solid #fff;outline-offset:1px}
+.wd.today small{color:var(--tx)}
+.wd.future .sq{opacity:.45}
+.hero-foot{display:flex;justify-content:space-between;font-size:12px;color:var(--tx3);margin-top:12px;font-weight:600;gap:8px;flex-wrap:wrap}
 
 /* duel */
 .duel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .runner{border-radius:22px;background:var(--card);border:1px solid var(--line);padding:16px 14px 14px;position:relative;overflow:hidden}
 .runner::before{content:"";position:absolute;inset:0;background:radial-gradient(90% 70% at 50% 0%,var(--c-dim),transparent 70%);pointer-events:none}
-.runner.o{--c:var(--o);--c-dim:var(--o-dim);--c-ink:var(--o-ink)} .runner.a{--c:var(--a);--c-dim:var(--a-dim);--c-ink:var(--a-ink)}
+.runner.o,.c-o{--c:var(--o);--c-dim:var(--o-dim);--c-ink:var(--o-ink)} .runner.a,.c-a{--c:var(--a);--c-dim:var(--a-dim);--c-ink:var(--a-ink)}
 .runner .who{display:flex;align-items:center;justify-content:space-between;position:relative}
 .runner .who b{font-weight:800;font-size:15px}
-.runner .who .you{font-size:10px;font-weight:800;letter-spacing:.1em;background:var(--c);color:var(--c-ink);border-radius:6px;padding:2px 6px}
+.you{font-size:10px;font-weight:800;letter-spacing:.1em;background:var(--c,var(--o));color:var(--c-ink,#000);border-radius:6px;padding:2px 6px}
 .ring{position:relative;width:118px;height:118px;margin:12px auto 8px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring .n{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
 .ring .n b{font-family:Anton;font-size:40px;line-height:1;display:block;font-weight:400}
-.ring .n small{font-size:10.5px;color:var(--tx3);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.ring .n small{font-size:10px;color:var(--tx3);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .runner .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;position:relative}
 .runner .stats div{background:rgba(255,255,255,.04);border-radius:12px;padding:8px 9px}
 .runner .stats b{display:block;font-size:17px;font-weight:800}
@@ -102,18 +110,24 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .today-st{position:relative;margin-top:10px;border-radius:12px;padding:9px 10px;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px}
 .today-st.done{background:var(--c);color:var(--c-ink)}
 .today-st.not{background:rgba(255,255,255,.05);color:var(--tx2);border:1px dashed var(--line)}
+.today-st.ice{background:rgba(124,200,255,.14);color:var(--ice);border:1px solid rgba(124,200,255,.3)}
 
 .callout{margin-top:14px;border-radius:20px;padding:16px;display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line)}
+.callout.ice{border-color:rgba(124,200,255,.35);background:linear-gradient(135deg,rgba(124,200,255,.10),var(--card) 70%)}
 .callout .emo{font-size:30px}
 .callout .txt{flex:1}
 .callout .txt b{display:block;font-size:15px}
 .callout .txt span{font-size:13px;color:var(--tx2)}
 .btn{border-radius:14px;padding:12px 16px;font-weight:800;font-size:14px;background:var(--card2);border:1px solid var(--line)}
 .btn.pri{background:var(--me,var(--o));color:var(--me-ink,#000);border:0}
+.btn.ice{background:var(--ice);color:#06131f;border:0}
 .btn.ghost{background:transparent}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:11px}
 .btn.full{width:100%;padding:16px;font-size:16px}
 .btn:active{transform:scale(.97)}
 .btn:disabled{opacity:.5}
+.row-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.row-btns .btn{flex:1}
 
 /* feed */
 .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
@@ -127,7 +141,6 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .post-h .meta{flex:1;min-width:0}
 .post-h .meta b{font-size:15px}
 .post-h .meta div{font-size:12.5px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.daytag{font-family:Anton;font-size:13px;background:rgba(255,255,255,.07);border-radius:8px;padding:4px 8px;color:var(--tx2)}
 .post-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:4px 14px 12px}
 .post-stats div small{display:block;font-size:11px;color:var(--tx3);font-weight:600;margin-bottom:1px}
 .post-stats div b{font-family:Anton;font-weight:400;font-size:26px;line-height:1.05}
@@ -135,9 +148,10 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .post-tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
 .tag{font-size:12px;font-weight:700;border-radius:8px;padding:4px 8px;background:rgba(255,255,255,.06);color:var(--tx2)}
 .tag.c{background:var(--c);color:var(--c-ink)}
+.tag.pr{background:rgba(255,197,61,.16);color:var(--gold)}
+.tag.ice{background:rgba(124,200,255,.14);color:var(--ice)}
 .post-notes{padding:0 14px 12px;font-size:14.5px;line-height:1.5;color:#dfe1e8;white-space:pre-wrap;word-wrap:break-word}
-.post-photo{width:100%;aspect-ratio:4/3;background:var(--card2);display:block;object-fit:cover}
-.post-photo.ph{display:grid;place-items:center;color:var(--tx3);font-size:13px}
+.post-photo.ph{width:100%;aspect-ratio:4/3;background:var(--card2);display:grid;place-items:center;color:var(--tx3);font-size:13px}
 .gal{position:relative}
 .gal-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .gal-track::-webkit-scrollbar{display:none}
@@ -153,7 +167,6 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .react{border-radius:99px;padding:6px 10px;font-size:14px;background:rgba(255,255,255,.05);border:1px solid transparent;display:flex;align-items:center;gap:4px;font-weight:700}
 .react small{font-size:11.5px;color:var(--tx2)}
 .react.mine{border-color:var(--me,var(--o));background:rgba(255,255,255,.09)}
-.post-actions .sp{flex:1}
 .more{padding:6px 8px;color:var(--tx3)}
 .comments{padding:0 14px 12px}
 .cmt{font-size:13.5px;margin-top:8px;line-height:1.4}
@@ -165,40 +178,66 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .cmt-in button{font-weight:800;font-size:13px;color:var(--me,var(--o));padding:0 6px}
 .empty{text-align:center;color:var(--tx3);padding:50px 20px;font-size:14px}
 .empty b{display:block;font-size:40px;margin-bottom:8px}
+.brkpost{margin-top:14px;border-radius:20px;padding:14px;display:flex;gap:12px;align-items:center;background:rgba(124,200,255,.06);border:1px dashed rgba(124,200,255,.35)}
+.brkpost .e{font-size:26px}
+.brkpost .t{flex:1;font-size:13.5px;color:var(--tx2);line-height:1.4}
+.brkpost .t b{color:var(--tx)}
 
 /* calendar */
-.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.cell{aspect-ratio:1/1.08;border-radius:16px;background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:8px 9px;text-align:left}
-.cell .d{font-family:Anton;font-size:22px;line-height:1;position:relative;z-index:2}
-.cell .dt{font-size:10px;color:var(--tx3);font-weight:700;position:relative;z-index:2}
+.mcal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mcal-h b{font-family:Anton;font-weight:400;font-size:20px;text-transform:uppercase}
+.mcal-h button{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);font-size:16px}
+.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.mcal .dn{font-size:10.5px;color:var(--tx3);font-weight:700;text-align:center;padding-bottom:2px}
+.cell{aspect-ratio:1/1.1;border-radius:12px;background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden;padding:5px 6px;text-align:left}
+.cell .d{font-size:12px;font-weight:800;position:relative;z-index:2}
 .cell .halves{position:absolute;inset:0;display:grid;grid-template-rows:1fr 1fr;z-index:1}
-.cell .halves i{opacity:0;transition:opacity .3s}
-.cell .halves i.o{background:linear-gradient(180deg,var(--o),rgba(200,255,61,.55))}
-.cell .halves i.a{background:linear-gradient(0deg,var(--a),rgba(255,79,154,.55))}
-.cell .halves i.on{opacity:1}
-.cell.ho .d,.cell.ha .dt{color:#0a0b0f}
-.cell.today{outline:2.5px solid #fff;outline-offset:2px}
-.cell.future{opacity:.42}
-.cell .crown{position:absolute;top:6px;right:7px;z-index:2;font-size:13px}
-.legend{display:flex;gap:14px;justify-content:center;margin:16px 0 4px;font-size:12px;color:var(--tx2);font-weight:600;flex-wrap:wrap}
+.cell .halves i.o.on{background:linear-gradient(180deg,var(--o),rgba(200,255,61,.6))}
+.cell .halves i.a.on{background:linear-gradient(0deg,var(--a),rgba(255,79,154,.6))}
+.cell.ho .d{color:#0a0b0f}
+.cell.today{outline:2px solid #fff;outline-offset:1px}
+.cell.future{opacity:.38}
+.cell.out{visibility:hidden}
+.cell .star{position:absolute;bottom:3px;right:4px;z-index:2;font-size:10px}
+.legend{display:flex;gap:14px;justify-content:center;margin:14px 0 4px;font-size:12px;color:var(--tx2);font-weight:600;flex-wrap:wrap}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
 
 /* stats */
+.box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 16px}
 .h2h{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 16px}
 .h2h-row{padding:13px 0;border-bottom:1px solid var(--line)}
 .h2h-row:last-child{border:0}
 .h2h-row .lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--tx3);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:7px}
 .h2h-row .lbl b{font-family:Anton;font-weight:400;font-size:19px;color:var(--tx);letter-spacing:0;text-transform:none}
-.h2h-row .lbl b.win{position:relative}
 .h2h-row .lbl b.win::after{content:"★";font-family:Inter;font-size:11px;color:var(--gold);position:relative;top:-6px;margin-left:3px}
-.h2h-row .lbl em{font-style:normal}
+.h2h-row .lbl em{font-style:normal;text-align:center}
 .vs{display:flex;height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.06);gap:3px}
 .vs i{display:block;height:100%;transition:width .6s cubic-bezier(.2,.8,.2,1)}
 .vs i.o{background:var(--o);border-radius:99px 0 0 99px}.vs i.a{background:var(--a);border-radius:0 99px 99px 0}
 .chartbox{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 10px 8px}
 .chartbox svg{width:100%;height:auto;display:block}
 #map{height:300px;border-radius:22px;border:1px solid var(--line);overflow:hidden;background:var(--card);z-index:1}
+.prs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prcol h4{margin:0 0 8px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px}
+.prcol h4 i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pr{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 11px;margin-bottom:7px}
+.pr small{display:block;font-size:10.5px;color:var(--tx3);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.pr b{font-family:Anton;font-weight:400;font-size:21px}
+.pr span{font-size:11px;color:var(--tx3);font-weight:600;margin-left:4px}
+.goal{display:flex;align-items:center;gap:14px;padding:6px 0}
+.goal+.goal{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
+.goal .gr{width:64px;height:64px;position:relative;flex:none}
+.goal .gr svg{width:100%;height:100%;transform:rotate(-90deg)}
+.goal .gr b{position:absolute;inset:0;display:grid;place-items:center;font-size:13px;font-weight:800}
+.goal .gt{flex:1;font-size:13px;color:var(--tx2);line-height:1.45}
+.goal .gt b{color:var(--tx);font-size:15px;display:block}
+.shoe{display:flex;align-items:center;gap:10px;padding:9px 0}
+.shoe+.shoe{border-top:1px solid var(--line)}
+.shoe .sn{flex:1;font-size:14px;font-weight:700}
+.shoe .sn small{display:block;font-size:11.5px;color:var(--tx3);font-weight:600;margin-top:2px}
+.shoe .sb{height:5px;border-radius:9px;background:rgba(255,255,255,.07);margin-top:6px;overflow:hidden}
+.shoe .sb i{display:block;height:100%;border-radius:9px}
 .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 .badge{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 8px 10px;text-align:center}
 .badge .e{font-size:28px;filter:grayscale(1) opacity(.35)}
@@ -210,20 +249,78 @@ nav.tabs .bar{pointer-events:auto;max-width:520px;margin:0 auto;display:grid;gri
 .badge.earned .e{filter:none}
 .badge.earned{border-color:rgba(255,197,61,.35);background:linear-gradient(180deg,rgba(255,197,61,.08),var(--card) 60%)}
 
+/* challenges */
+.trophies{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 18px}
+.trophies .t{font-family:Anton;font-size:40px;line-height:1}
+.trophies .t small{display:block;font-family:Inter;font-size:11.5px;font-weight:700;color:var(--tx3);margin-top:3px}
+.trophies .mid{text-align:center;font-size:26px}
+.trophies .mid small{display:block;font-size:10.5px;color:var(--tx3);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.ch{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px;margin-top:14px;position:relative;overflow:hidden}
+.ch.invite{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,197,61,.25) inset}
+.ch.done{background:linear-gradient(180deg,rgba(255,197,61,.07),var(--card) 55%)}
+.ch-h{display:flex;gap:12px;align-items:flex-start}
+.ch-h .e{font-size:30px;line-height:1;width:48px;height:48px;border-radius:15px;background:var(--card2);display:grid;place-items:center;flex:none}
+.ch-h .tt{flex:1;min-width:0}
+.ch-h .tt b{display:block;font-size:17px;font-weight:800;line-height:1.2}
+.ch-h .tt small{display:block;font-size:12.5px;color:var(--tx3);font-weight:600;margin-top:3px}
+.ch .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ch .timebar{height:4px;border-radius:9px;background:rgba(255,255,255,.07);margin-top:12px;overflow:hidden}
+.ch .timebar i{display:block;height:100%;background:var(--tx2);border-radius:9px}
+.stand{margin-top:14px}
+.srow{display:flex;align-items:center;gap:10px;margin-top:10px}
+.srow .av{width:32px;height:32px;font-size:13px}
+.srow .sbody{flex:1;min-width:0}
+.srow .stop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.srow .stop b{font-family:Anton;font-weight:400;font-size:22px}
+.srow .stop small{font-size:12px;color:var(--tx3);font-weight:600;text-align:right}
+.srow .sbar{height:7px;border-radius:9px;background:rgba(255,255,255,.07);margin-top:4px;overflow:hidden}
+.srow .sbar i{display:block;height:100%;border-radius:9px;background:var(--c);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.srow.out{opacity:.45}
+.srow .lead{font-size:13px;margin-left:4px}
+.teambar{height:12px;border-radius:9px;background:rgba(255,255,255,.07);margin-top:8px;overflow:hidden;display:flex}
+.teambar i{display:block;height:100%}
+.teambar i.o{background:var(--o)}.teambar i.a{background:var(--a)}
+.rules{margin:12px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--tx2);line-height:1.5}
+.rules li::before{content:"· ";color:var(--tx3)}
+.stakes{margin-top:12px;border-radius:14px;padding:10px 12px;background:rgba(255,197,61,.08);border:1px solid rgba(255,197,61,.22);font-size:13.5px;font-weight:600;color:#ffe2a0}
+.result{margin-top:14px;border-radius:16px;padding:12px 14px;font-weight:800;font-size:15px;display:flex;gap:10px;align-items:center;background:var(--card2)}
+.result .e{font-size:24px}
+.tpl{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.tpl button{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:left;font-size:13.5px;font-weight:800;display:flex;gap:9px;align-items:center}
+.tpl button span{font-size:22px}
+.tpl button small{display:block;font-size:11px;color:var(--tx3);font-weight:600;margin-top:2px}
+.kinds{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kinds button{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:11px 12px;text-align:left}
+.kinds button b{display:block;font-size:14px}
+.kinds button small{display:block;font-size:11.5px;color:var(--tx3);font-weight:600;line-height:1.35;margin-top:3px}
+.kinds button.on{border-color:var(--me,var(--o));background:rgba(255,255,255,.07)}
+.emojis{display:flex;gap:6px;flex-wrap:wrap}
+.emojis button{width:42px;height:42px;border-radius:12px;background:var(--card);border:1.5px solid var(--line);font-size:21px}
+.emojis button.on{border-color:var(--me,var(--o));background:rgba(255,255,255,.08)}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.toggle span{font-size:14px;font-weight:600}
+.toggle span small{display:block;font-size:12px;color:var(--tx3);font-weight:500;margin-top:2px}
+.sw{width:50px;height:30px;border-radius:99px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw.on{background:var(--me,var(--o))}
+.sw.on::after{transform:translateX(20px)}
+
 /* sheet */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .scrim.on{opacity:1;pointer-events:auto}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-width:540px;margin:0 auto;background:var(--bg2);border-radius:28px 28px 0 0;border:1px solid var(--line);border-bottom:0;max-height:92vh;overflow-y:auto;transform:translateY(105%);transition:transform .35s cubic-bezier(.2,.9,.2,1);padding:10px 18px calc(var(--safe-b) + 22px);-webkit-overflow-scrolling:touch}
 .sheet.on{transform:none}
 .grab{width:42px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 12px}
-.sheet h3{font-family:Anton;font-weight:400;text-transform:uppercase;font-size:26px;margin:4px 0 16px;display:flex;justify-content:space-between;align-items:center}
-.sheet h3 button{font-family:Inter;font-size:14px;color:var(--tx2);font-weight:600;text-transform:none}
+.sheet h3{font-family:Anton;font-weight:400;text-transform:uppercase;font-size:26px;margin:4px 0 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sheet h3 button{font-family:Inter;font-size:14px;color:var(--tx2);font-weight:600;text-transform:none;flex:none}
 .fld{margin-bottom:16px}
-.fld>label{display:block;font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.fld>label,.lab{display:block;font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
 .in{width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;outline:none;-webkit-appearance:none;appearance:none}
 .in:focus{border-color:var(--me,var(--o))}
 textarea.in{min-height:90px;resize:vertical;line-height:1.45}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.row2>*{min-width:0}
+input[type=date].in,input[type=time].in{min-width:0;max-width:100%;display:block}
 .bigin{display:flex;align-items:baseline;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 16px}
 .bigin input{background:none;border:0;outline:none;font-family:Anton;font-size:46px;width:100%;min-width:0;padding:0}
 .bigin span{color:var(--tx3);font-weight:700}
@@ -236,6 +333,7 @@ textarea.in{min-height:90px;resize:vertical;line-height:1.45}
 .opts{display:flex;flex-wrap:wrap;gap:8px}
 .opt{border-radius:12px;padding:9px 12px;font-size:14px;font-weight:700;background:var(--card);border:1px solid var(--line);color:var(--tx2)}
 .opt.on{background:var(--me,var(--o));color:var(--me-ink,#000);border-color:transparent}
+.opt.ice.on{background:var(--ice);color:#06131f}
 .feel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .feel button{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 0 7px;font-size:26px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .feel button small{font-size:10px;color:var(--tx3);font-weight:700}
@@ -244,68 +342,62 @@ textarea.in{min-height:90px;resize:vertical;line-height:1.45}
 .loc-row .in{flex:1}
 .loc-row button{flex:none;width:50px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
 .loc-row button svg{width:20px;height:20px;color:var(--me,var(--o))}
-.drop{border:1.5px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--tx2);font-size:14px;font-weight:600;display:block;cursor:pointer;position:relative;overflow:hidden}
+.drop{border:1.5px dashed var(--line);border-radius:18px;padding:22px;text-align:center;color:var(--tx2);font-size:14px;font-weight:600;display:block;cursor:pointer}
 .drop svg{width:28px;height:28px;display:block;margin:0 auto 6px;color:var(--tx3)}
-.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.drop.has{aspect-ratio:4/3;padding:0}
-.drop .x{position:absolute;top:8px;right:8px;z-index:2;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:16px;display:grid;place-items:center}
 .hint{font-size:12px;color:var(--tx3);margin-top:6px}
 
-/* who picker */
 .who-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
 .who-pick button{border-radius:22px;padding:22px 10px;font-weight:800;font-size:18px;display:flex;flex-direction:column;align-items:center;gap:10px;border:2px solid var(--line);background:var(--card)}
 .who-pick button .av{width:64px;height:64px;font-size:26px}
 .who-pick button.o .av{background:var(--o);color:var(--o-ink)} .who-pick button.a .av{background:var(--a);color:var(--a-ink)}
 
-/* toast */
 .toast{position:fixed;left:50%;top:calc(var(--safe-t) + 14px);transform:translate(-50%,-150%);z-index:80;background:var(--tx);color:var(--bg);font-weight:700;font-size:14px;border-radius:16px;padding:12px 16px;max-width:calc(100% - 32px);box-shadow:0 12px 30px rgba(0,0,0,.5);transition:transform .35s cubic-bezier(.2,.9,.2,1);display:flex;gap:10px;align-items:center}
 .toast.on{transform:translate(-50%,0)}
 canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:90;width:100%;height:100%}
 .celebrate{text-align:center;padding:10px 4px 6px}
 .celebrate .e{font-size:70px;line-height:1;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.2) rotate(-20deg)}to{transform:none}}
-.celebrate h4{font-family:Anton;font-weight:400;font-size:34px;text-transform:uppercase;margin:12px 0 6px;line-height:1}
+.celebrate h4{font-family:Anton;font-weight:400;font-size:32px;text-transform:uppercase;margin:12px 0 6px;line-height:1}
 .celebrate p{color:var(--tx2);margin:0 0 18px;font-size:15px;line-height:1.45}
+.celebrate .prl{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:-6px 0 16px}
 .leaflet-container{background:#111318;font-family:Inter}
 #map .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.6)}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card2);color:var(--tx)}
 .leaflet-popup-content{margin:10px 12px;font-size:13px}
 .pin{width:16px;height:16px;border-radius:50%;border:3px solid #0a0b0f;box-shadow:0 0 0 2px rgba(255,255,255,.3)}
-.settings-list .in{margin-bottom:0}
 .small-note{font-size:12.5px;color:var(--tx3);line-height:1.5;margin-top:4px}
 .danger{color:var(--red)}
 .quote{margin-top:14px;padding:16px 18px;border-radius:20px;background:var(--card);border:1px solid var(--line);font-size:15px;line-height:1.45;color:#dfe1e8;font-weight:500}
 .quote b{display:block;font-size:11px;color:var(--tx3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.list-item{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:14px}
+.list-item+.list-item{border-top:1px solid var(--line)}
+.list-item .grow{flex:1;min-width:0}
+.list-item small{display:block;font-size:12px;color:var(--tx3);margin-top:2px}
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <header class="top">
     <div class="brand">
-      <div class="logo" id="logoN">30</div>
-      <div class="name">Run Club<small id="brandSub">Oliver × Alexis</small></div>
+      <div class="logo">RC</div>
+      <div class="name">Run Club<small>Oliver × Alexis</small></div>
     </div>
     <div class="top-r">
       <div class="pill" id="syncPill" onclick="syncNow(true)" style="cursor:pointer"><span class="dot"></span><span id="syncTxt">Local</span></div>
       <button class="me-chip" id="meChip" aria-label="Settings"></button>
     </div>
   </header>
-
-  <!-- HOME -->
   <section class="view on" id="v-home"></section>
-  <!-- CALENDAR -->
-  <section class="view" id="v-cal"></section>
-  <!-- FEED -->
   <section class="view" id="v-feed"></section>
-  <!-- STATS -->
+  <section class="view" id="v-ch"></section>
   <section class="view" id="v-stats"></section>
 </div>
 
 <nav class="tabs"><div class="bar">
   <button class="tab on" data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Home</button>
-  <button class="tab" data-v="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span id="tabDays">30 Days</span></button>
-  <button class="fab" id="fab" aria-label="Log a run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   <button class="tab" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>Feed</button>
+  <button class="fab" id="fab" aria-label="Log a run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+  <button class="tab" data-v="ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>Challenges</button>
   <button class="tab" data-v="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Stats</button>
 </div></nav>
 
@@ -321,14 +413,21 @@ const P = {
   oliver:{key:'oliver', name:'Oliver', init:'O', cls:'o', c:'#c8ff3d', ink:'#10150a'},
   alexis:{key:'alexis', name:'Alexis', init:'A', cls:'a', c:'#ff4f9a', ink:'#1a0a12'}
 };
+const WHO = ['oliver','alexis'];
 const OTHER = {oliver:'alexis', alexis:'oliver'};
-const DEFAULT_DAYS = 30;
-let DAYS = DEFAULT_DAYS;          // challenge length; can be extended (run_config/main.days)
-const CHALLENGE_START = '2026-11-05';   // Day 1
+const CLUB_START = '2026-11-05';
 const MAX_PHOTOS = 5;
 const TYPES = ['Easy','Tempo','Long','Intervals','Hills','Trail','Treadmill','Race','Recovery'];
 const FEELS = [['😵','Rough'],['😮‍💨','Hard'],['🙂','Fine'],['😎','Good'],['🚀','Flying']];
 const REACTS = ['🔥','💪','👏','🫡','😮‍💨'];
+const BREAKS = {
+  rest:    {e:'😴', n:'Rest Day'},
+  sick:    {e:'🤒', n:'Sick'},
+  injury:  {e:'🤕', n:'Injured'},
+  travel:  {e:'✈️', n:'Travel'},
+  vacation:{e:'🏝️', n:'Vacation'},
+  other:   {e:'⏸️', n:'Other'}
+};
 const QUOTES = [
   "Nobody ever regretted a run once it was done.",
   "Slow miles are still miles. Get them in.",
@@ -337,25 +436,53 @@ const QUOTES = [
   "Future you is already proud. Go earn it.",
   "Run the mile you're in.",
   "Rain, cold, tired — the streak doesn't care. Neither should you.",
-  "One day or day one. Today it's day something — make it count.",
-  "Your partner is watching the calendar. Don't leave a blank square.",
+  "Your partner is watching the week strip. Don't leave a blank square.",
   "Easy pace counts. Skipping doesn't.",
-  "Thirty days builds a habit. A habit builds a runner.",
-  "Lace up. The story only gets written if you show up."
+  "Rest is part of training. Taking a break isn't quitting.",
+  "Lace up. The story only gets written if you show up.",
+  "Somebody's winning this week. Might as well be you."
+];
+const KINDS = {
+  daily: {e:'🔥', n:'Run Every Day',    d:'Log a run every day. Misses count against you.', team:true},
+  miles: {e:'🛣️', n:'Most Miles',       d:'Most miles wins. Team: hit a combined goal.', team:true, teamTarget:true, unit:'mi'},
+  race:  {e:'🏁', n:'First To X Miles', d:'First to reach the target wins.', target:true, unit:'mi'},
+  runs:  {e:'👟', n:'Most Runs',        d:'Most runs logged wins. Team: hit a combined count.', team:true, teamTarget:true, unit:'runs'},
+  weekly:{e:'📅', n:'Weekly Target',    d:'Hit a set number of runs (or miles) every week.', team:true, target:true},
+  long:  {e:'🦒', n:'Longest Run',      d:'Biggest single run wins.'},
+  pace:  {e:'⚡', n:'Fastest Pace',     d:'Best average pace wins.'}
+};
+const CH_EMOJIS = ['🔥','🏁','🛣️','👟','⚡','🦒','📅','🏆','🤝','🍕','💸','🌋','🌴','🌊','❄️','🎯'];
+const TEMPLATES = [
+  {name:'7-Day Streak',      emoji:'🔥', kind:'daily',  mode:'versus', days:7,  rules:{strikes:0}, sub:'Miss once and you’re out'},
+  {name:'Month Of Miles',    emoji:'🛣️', kind:'miles',  mode:'versus', days:30, sub:'Most miles in 30 days'},
+  {name:'100 Miles Together',emoji:'🤝', kind:'miles',  mode:'team',   days:60, target:100, sub:'Team goal, 60 days'},
+  {name:'First To 50',       emoji:'🏁', kind:'race',   mode:'versus', days:0,  target:50, sub:'Race to 50 miles'},
+  {name:'3 Runs A Week',     emoji:'📅', kind:'weekly', mode:'team',   days:28, target:3, sub:'Both of you, 4 weeks'},
+  {name:'Speed Week',        emoji:'⚡', kind:'pace',   mode:'versus', days:7,  rules:{minTotal:5}, sub:'Best pace, 5 mi minimum'},
+  {name:'Long Run Showdown', emoji:'🦒', kind:'long',   mode:'versus', days:14, sub:'Biggest single run'},
+  {name:'Weekend Warriors',  emoji:'🌴', kind:'runs',   mode:'versus', days:14, rules:{minDist:3}, sub:'Most 3+ mile runs'}
 ];
 const BADGES = [
-  {id:'first',  e:'👟', n:'First Steps',  d:'Log your first run'},
-  {id:'s3',     e:'🎩', n:'Hat Trick',    d:'3-day streak'},
-  {id:'s7',     e:'🗓️', n:'Week Warrior', d:'7-day streak'},
-  {id:'half',   e:'⛰️', n:'Halfway Hero', d:'Run {half} of {days} days'},
-  {id:'s14',    e:'⚡', n:'Unbreakable',  d:'14-day streak'},
-  {id:'10k',    e:'🏅', n:'10K Club',     d:'One run of 6.2+ mi'},
-  {id:'mara',   e:'🏛️', n:'Marathoner',   d:'26.2 total miles'},
-  {id:'fifty',  e:'💯', n:'Fifty Miler',  d:'50 total miles'},
-  {id:'speed',  e:'🐆', n:'Speedster',    d:'Sub-8:00 pace, 1+ mi'},
-  {id:'early',  e:'🌅', n:'Early Bird',   d:'Run before 7 AM'},
-  {id:'owl',    e:'🦉', n:'Night Owl',    d:'Run after 8 PM'},
-  {id:'perfect',e:'👑', n:'Perfect {days}',   d:'All {days} days, no misses'}
+  {id:'first',  e:'👟', n:'First Steps',   d:'Log your first run'},
+  {id:'s3',     e:'🎩', n:'Hat Trick',     d:'3-day streak'},
+  {id:'s7',     e:'🗓️', n:'Week Warrior',  d:'7-day streak'},
+  {id:'s14',    e:'⚡', n:'Unbreakable',   d:'14-day streak'},
+  {id:'s30',    e:'🌋', n:'Volcano',       d:'30-day streak'},
+  {id:'s100',   e:'💎', n:'Diamond Legs',  d:'100-day streak'},
+  {id:'w4',     e:'📅', n:'Consistent',    d:'Hit your weekly goal 4 weeks running'},
+  {id:'10k',    e:'🏅', n:'10K Club',      d:'One run of 6.2+ mi'},
+  {id:'hm',     e:'🥈', n:'Half Marathon', d:'One run of 13.1+ mi'},
+  {id:'mara',   e:'🏛️', n:'Marathoner',    d:'26.2 total miles'},
+  {id:'c100',   e:'💯', n:'Century',       d:'100 total miles'},
+  {id:'c500',   e:'🚀', n:'Five Hundred',  d:'500 total miles'},
+  {id:'speed',  e:'🐆', n:'Speedster',     d:'Sub-8:00 pace, 1+ mi'},
+  {id:'early',  e:'🌅', n:'Early Bird',    d:'Run before 7 AM'},
+  {id:'owl',    e:'🦉', n:'Night Owl',     d:'Run after 8 PM'},
+  {id:'together',e:'🤝',n:'Running Buddies',d:'Log a run together'},
+  {id:'champ',  e:'🏆', n:'Champion',      d:'Win a challenge'},
+  {id:'wk5',    e:'👑', n:'Week King',     d:'Win 5 weekly duels'},
+  {id:'comeback',e:'🔄',n:'Comeback',      d:'Run the day after a break'},
+  {id:'explore',e:'🧭', n:'Explorer',      d:'Run in 5 different places'}
 ];
 
 /* ============================== state ============================== */
@@ -366,73 +493,328 @@ const LS = {
 const S = {
   me: LS.get('rc_me', null),
   logs: LS.get('rc_logs', {}),
-  cfg: LS.get('rc_cfg', {start: CHALLENGE_START, updatedAt: 0}),
-  view: 'home',
-  feedFilter: 'all',
-  photos: {},
-  seenNudge: LS.get('rc_seenNudge', 0)
+  cfg: LS.get('rc_cfg', {start: CLUB_START}),
+  people: LS.get('rc_people', {oliver:{}, alexis:{}}),
+  ch: LS.get('rc_ch', {}),
+  view: 'home', feedFilter: 'all', period: 'month', chFilter: 'live',
+  calMonth: null, photos: {},
+  seenNudge: LS.get('rc_seenNudge', 0),
+  seenCh: LS.get('rc_seenCh', {})
 };
-function syncDays(){ DAYS = Math.max(1, Math.round(+S.cfg.days || DEFAULT_DAYS)); }
-const bt = s => String(s).replace(/\{days\}/g, DAYS).replace(/\{half\}/g, Math.ceil(DAYS/2));
-syncDays();
-function saveLocal(){ LS.set('rc_logs', S.logs); LS.set('rc_cfg', S.cfg); }
+['logs','cfg','people','ch'].forEach(k=>{ if(!S[k] || typeof S[k] !== 'object' || Array.isArray(S[k])) S[k] = {}; });
+if(!S.cfg.start) S.cfg.start = CLUB_START;
+WHO.forEach(w=>{ if(!S.people[w] || typeof S.people[w] !== 'object') S.people[w] = {}; });
+function saveLocal(){ LS.set('rc_logs', S.logs); LS.set('rc_cfg', S.cfg); LS.set('rc_people', S.people); LS.set('rc_ch', S.ch); reindex(); }
 
 /* ============================== dates ============================== */
 const pad = n => String(n).padStart(2,'0');
 const iso = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
 const addDays = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const shift = (s,n) => iso(addDays(parse(s), n));
 const diffDays = (a,b) => Math.round((parse(b) - parse(a)) / 864e5);
 const today = () => iso(new Date());
 const fmtDate = (s,opt={month:'short',day:'numeric'}) => parse(s).toLocaleDateString('en-US', opt);
-function startDate(){ return S.cfg.start || CHALLENGE_START; }
-function dayNum(date){ return diffDays(startDate(), date) + 1; }   // 1..30 inside challenge
-function dateFor(n){ return iso(addDays(parse(startDate()), n-1)); }
-function curDay(){ return dayNum(today()); }
+const weekStart = s => { const x = parse(s); return iso(addDays(x, -((x.getDay()+6)%7))); };
+function range(a,b){ const out = []; if(!a||!b||a>b) return out; for(let d=a; d<=b; d=shift(d,1)) out.push(d); return out; }
+function clubStart(){ return S.cfg.start || CLUB_START; }
+if(!S.calMonth) S.calMonth = today().slice(0,7);
 
-/* ============================== math ============================== */
+/* ============================== index + basics ============================== */
+let IDX = {oliver:{}, alexis:{}};
+function reindex(){
+  IDX = {oliver:{}, alexis:{}};
+  Object.values(S.logs).forEach(l=>{ if(!IDX[l.who]) return; (IDX[l.who][l.date] = IDX[l.who][l.date] || []).push(l); });
+}
+reindex();
 const logsOf = who => Object.values(S.logs).filter(l => l.who === who);
-const inChallenge = date => { const n = dayNum(date); return n >= 1 && n <= DAYS; };
-function ranOn(who, date){ return Object.values(S.logs).some(l => l.who===who && l.date===date); }
-function daysRun(who){ return new Set(logsOf(who).filter(l=>inChallenge(l.date)).map(l=>l.date)).size; }
-function totalMi(who){ return logsOf(who).filter(l=>inChallenge(l.date)).reduce((s,l)=>s+(+l.dist||0),0); }
-function totalSec(who){ return logsOf(who).filter(l=>inChallenge(l.date)).reduce((s,l)=>s+(+l.secs||0),0); }
-function curStreak(who){
-  let d = new Date(), n = 0;
-  if(!ranOn(who, iso(d))) d = addDays(d,-1);
-  while(ranOn(who, iso(d)) && inChallenge(iso(d))){ n++; d = addDays(d,-1); }
-  return n;
-}
-function bestStreak(who){
-  let best = 0, cur = 0;
-  for(let i=1;i<=DAYS;i++){ if(ranOn(who, dateFor(i))){ cur++; best = Math.max(best,cur); } else cur = 0; }
-  return best;
-}
-function avgPace(who){
-  const ls = logsOf(who).filter(l=>inChallenge(l.date) && l.dist>0 && l.secs>0);
-  const mi = ls.reduce((s,l)=>s+ +l.dist,0), sec = ls.reduce((s,l)=>s+ +l.secs,0);
-  return mi ? sec/mi : 0;
-}
-function longest(who){ return logsOf(who).filter(l=>inChallenge(l.date)).reduce((m,l)=>Math.max(m,+l.dist||0),0); }
+const logsIn = (who, from, to) => logsOf(who).filter(l => l.date >= from && l.date <= to);
+const ranOn = (who, date) => !!(IDX[who] && IDX[who][date]);
+const sumMi = ls => ls.reduce((s,l)=>s+(+l.dist||0),0);
+const sumSec = ls => ls.reduce((s,l)=>s+(+l.secs||0),0);
+function paceOf(ls){ const t = ls.filter(l=>l.dist>0&&l.secs>0); const m = sumMi(t); return m ? sumSec(t)/m : 0; }
 const fmtPace = s => { if(!s || !isFinite(s)) return '–'; s = Math.round(s); return Math.floor(s/60)+':'+pad(s%60); };
 const fmtDur = s => { s = Math.round(s||0); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return h ? h+':'+pad(m)+':'+pad(x) : m+':'+pad(x); };
 const fmtHrs = s => { const h = s/3600; return h >= 1 ? h.toFixed(1)+'h' : Math.round(s/60)+'m'; };
 const mi = n => (Math.round((+n||0)*100)/100).toString();
+const mi1 = n => (Math.round((+n||0)*10)/10).toString();
+const plural = (n,w) => n+' '+w+(n===1?'':'s');
 
+/* ============================== breaks ============================== */
+const breaksOf = who => (S.people[who] && S.people[who].breaks) || [];
+const breakOn = (who, date) => breaksOf(who).find(b => b.from <= date && date <= (b.to || today()));
+const activeBreak = who => breakOn(who, today());
+function breakLabel(b){
+  const k = BREAKS[b.kind] || BREAKS.other;
+  const span = b.to ? (b.from===b.to ? fmtDate(b.from) : fmtDate(b.from)+' – '+fmtDate(b.to)) : 'Since '+fmtDate(b.from);
+  return {e:k.e, n:k.n, span};
+}
+
+/* ============================== streaks + goals ============================== */
+// A day counts if you ran. Break days are frozen: they don't add to the streak and don't end it.
+function curStreak(who){
+  let d = today(), n = 0, g = 0;
+  if(!ranOn(who, d)) d = shift(d,-1);
+  while(g++ < 4000 && d >= clubStart()){
+    if(ranOn(who, d)) n++; else if(!breakOn(who, d)) break;
+    d = shift(d,-1);
+  }
+  return n;
+}
+function bestStreak(who){
+  let best = 0, cur = 0;
+  range(clubStart(), today()).forEach(d=>{
+    if(ranOn(who,d)){ cur++; best = Math.max(best,cur); }
+    else if(!breakOn(who,d) && d !== today()) cur = 0;
+  });
+  return best;
+}
+function togetherStreak(){
+  let d = today(), n = 0, g = 0;
+  if(!(ranOn('oliver',d) && ranOn('alexis',d))) d = shift(d,-1);
+  while(g++ < 4000 && d >= clubStart()){
+    const o = ranOn('oliver',d), a = ranOn('alexis',d);
+    if(o && a) n++;
+    else if(!((o || breakOn('oliver',d)) && (a || breakOn('alexis',d)))) break;
+    d = shift(d,-1);
+  }
+  return n;
+}
+const weekGoal = who => +((S.people[who].goal||{}).week) || 3;
+const yearGoal = who => +((S.people[who].goal||{}).year) || 0;
+function weekRuns(who, ws){ return logsIn(who, ws, shift(ws,6)).length; }
+function weekBreakDays(who, ws){ return range(ws, shift(ws,6)).filter(d=>breakOn(who,d)).length; }
+// weeks in a row hitting your weekly goal; a mostly-on-break week is skipped, not failed
+function weekStreak(who){
+  let ws = weekStart(today()), n = 0, g = 0;
+  if(weekRuns(who, ws) >= weekGoal(who)) n++;
+  ws = shift(ws,-7);
+  while(g++ < 600 && shift(ws,6) >= clubStart()){
+    if(weekRuns(who, ws) >= weekGoal(who)) n++;
+    else if(weekBreakDays(who, ws) < 4) break;
+    ws = shift(ws,-7);
+  }
+  return n;
+}
+function bestWeekStreak(who){
+  let best = 0, cur = 0;
+  for(let ws = weekStart(clubStart()); ws <= weekStart(today()); ws = shift(ws,7)){
+    const cw = ws === weekStart(today());
+    if(weekRuns(who, ws) >= weekGoal(who)){ cur++; best = Math.max(best,cur); }
+    else if(!cw && weekBreakDays(who, ws) < 4) cur = 0;
+  }
+  return best;
+}
+// each finished week, whoever ran more miles wins it
+function weekWins(){
+  const w = {oliver:0, alexis:0, ties:0, list:[]};
+  for(let ws = weekStart(clubStart()); ws < weekStart(today()); ws = shift(ws,7)){
+    const o = sumMi(logsIn('oliver', ws, shift(ws,6))), a = sumMi(logsIn('alexis', ws, shift(ws,6)));
+    if(!o && !a) continue;
+    const win = Math.abs(o-a) < .005 ? null : (o > a ? 'oliver' : 'alexis');
+    if(win) w[win]++; else w.ties++;
+    w.list.push({ws, o, a, win});
+  }
+  return w;
+}
+
+/* ============================== records ============================== */
+function records(who, skipId){
+  const ls = logsOf(who).filter(l => l.id !== skipId);
+  const r = {long:null, pace:null, fivek:null, tenk:null, week:null, month:null};
+  ls.forEach(l=>{
+    const d = +l.dist||0, p = (l.secs && d) ? l.secs/d : 0;
+    if(d && (!r.long || d > r.long.v)) r.long = {v:d, id:l.id, date:l.date};
+    if(d >= 1 && p && (!r.pace || p < r.pace.v)) r.pace = {v:p, id:l.id, date:l.date};
+    if(d >= 3.1 && p && (!r.fivek || p < r.fivek.v)) r.fivek = {v:p, id:l.id, date:l.date};
+    if(d >= 6.2 && p && (!r.tenk || p < r.tenk.v)) r.tenk = {v:p, id:l.id, date:l.date};
+  });
+  const wk = {}, mo = {};
+  ls.forEach(l=>{ const w = weekStart(l.date), m = l.date.slice(0,7); wk[w] = (wk[w]||0) + (+l.dist||0); mo[m] = (mo[m]||0) + (+l.dist||0); });
+  Object.entries(wk).forEach(([k,v])=>{ if(!r.week || v > r.week.v) r.week = {v, key:k}; });
+  Object.entries(mo).forEach(([k,v])=>{ if(!r.month || v > r.month.v) r.month = {v, key:k}; });
+  return r;
+}
+let REC = null;
+function recNow(){ if(!REC) REC = {oliver:records('oliver'), alexis:records('alexis')}; return REC; }
+function prTags(l){
+  const r = recNow()[l.who]; if(!r) return [];
+  const t = [];
+  if(r.long && r.long.id === l.id) t.push('🏆 Longest Run');
+  if(r.pace && r.pace.id === l.id) t.push('⚡ Fastest Pace');
+  if(r.fivek && r.fivek.id === l.id && !(r.pace && r.pace.id === l.id)) t.push('🥇 Best 5K+ Pace');
+  return t;
+}
+function newPRs(who, id){
+  const b = records(who, id), a = records(who), out = [];
+  if(a.long && a.long.id === id && (!b.long || a.long.v > b.long.v)) out.push('🏆 Longest Run Ever');
+  if(a.pace && a.pace.id === id && (!b.pace || a.pace.v < b.pace.v) && b.pace) out.push('⚡ Fastest Pace Ever');
+  if(a.fivek && a.fivek.id === id && b.fivek && a.fivek.v < b.fivek.v) out.push('🥇 Best 5K+ Pace');
+  if(a.week && b.week && a.week.v > b.week.v && a.week.key === weekStart(S.logs[id].date)) out.push('📈 Biggest Week');
+  return out;
+}
+
+/* ============================== challenges engine ============================== */
+const chList = () => Object.values(S.ch).filter(c => c && c.id && !c.declined);
+const chLast = c => { const t = today(); return (c.end && c.end < t) ? c.end : t; };   // last day counted so far
+function qRuns(c, who){
+  const r = c.rules || {}, to = chLast(c);
+  return logsOf(who).filter(l => l.date >= c.start && l.date <= to
+    && (+l.dist||0) >= (+r.minDist||0)
+    && (!r.types || !r.types.length || r.types.includes(l.type)));
+}
+const excused = (c, who, d) => (c.rules||{}).breaksPause !== false && !!breakOn(who, d);
+const strikesOf = c => { const s = (c.rules||{}).strikes; return (s===null || s===undefined || s==='') ? null : +s; };
+// days missed (after weekly rest-day allowance), excluding today while it's still open
+function missDays(c, who){
+  const hit = new Set(qRuns(c, who).map(l=>l.date)), t = today(), rest = +((c.rules||{}).rest||0), wk = {}, out = [];
+  range(c.start, chLast(c)).forEach(d=>{
+    if(hit.has(d) || d === t || excused(c, who, d)) return;
+    const w = weekStart(d); wk[w] = (wk[w]||0) + 1;
+    if(wk[w] > rest) out.push(d);
+  });
+  return {hit, miss:out};
+}
+function weeklyTally(c, who){
+  const unit = (c.rules||{}).wkUnit || 'runs', tgt = +c.target || 1, rs = qRuns(c, who), last = chLast(c), t = today();
+  const weeks = [];
+  for(let ws = weekStart(c.start); ws <= last; ws = shift(ws,7)){
+    const we = shift(ws,6), from = ws < c.start ? c.start : ws, endCap = c.end && c.end < we ? c.end : we, to = endCap > last ? last : endCap;
+    const len = diffDays(from, endCap) + 1, need = len >= 7 ? tgt : Math.max(1, Math.ceil(tgt*len/7*10)/10);
+    const inW = rs.filter(l => l.date >= from && l.date <= to);
+    const v = unit === 'miles' ? sumMi(inW) : inW.length;
+    const closed = endCap < t, done = v >= need;
+    const brk = range(from, endCap).filter(d=>excused(c, who, d)).length;
+    weeks.push({ws, v, need, done, closed, excused: !done && brk >= Math.ceil(len/2), end:endCap});
+  }
+  return weeks;
+}
+function chStatus(c){
+  if(c.endedAt) return 'finished';
+  if(c.start > today()) return 'upcoming';
+  const R = chResult(c);
+  if(R.decided) return 'finished';
+  if(c.end && c.end < today()) return 'finished';
+  return 'active';
+}
+// standings for any challenge: rows (per person), team totals, leader/winner
+function chResult(c){
+  const k = c.kind, team = c.mode === 'team', tgt = +c.target || 0, strikes = strikesOf(c);
+  const R = {rows:{}, decided:false, winner:null, teamWon:null, leader:null};
+  const better = (x, y) => k === 'pace' ? (x.v && (!y.v || x.v < y.v)) : x.v > y.v;
+  WHO.forEach(w=>{
+    const rs = qRuns(c, w), row = {who:w, v:0, disp:'', sub:'', pct:0, out:null};
+    if(k === 'daily'){
+      const m = missDays(c, w);
+      row.v = m.hit.size; row.miss = m.miss.length; row.disp = plural(row.v,'day');
+      row.sub = row.miss ? plural(row.miss,'miss').replace('misss','misses') : 'No misses';
+      if(strikes !== null){ if(row.miss > strikes) row.out = m.miss[strikes]; else row.sub += ' · '+(strikes-row.miss)+' left'; }
+      row.today = m.hit.has(today());
+    } else if(k === 'weekly'){
+      const wk = weeklyTally(c, w), fails = wk.filter(x=>x.closed && !x.done && !x.excused);
+      row.v = wk.filter(x=>x.done).length; row.miss = fails.length; row.weeks = wk;
+      const cur = wk[wk.length-1], u = (c.rules||{}).wkUnit === 'miles' ? 'mi' : 'runs';
+      row.disp = plural(row.v,'week');
+      row.sub = cur ? 'This week '+(u==='mi'?mi1(cur.v):cur.v)+'/'+cur.need+' '+u : '';
+      if(strikes !== null && row.miss > strikes) row.out = fails[strikes].end;
+    } else if(k === 'miles' || k === 'race'){
+      row.v = sumMi(rs); row.disp = mi1(row.v)+' mi';
+      if(k === 'race' && tgt){
+        let cum = 0; const sorted = rs.slice().sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+        for(const l of sorted){ cum += +l.dist||0; if(cum >= tgt){ row.reached = l.date+(l.time||''); break; } }
+        row.sub = row.reached ? 'Hit '+tgt+' mi on '+fmtDate(row.reached.slice(0,10)) : mi1(Math.max(0,tgt-row.v))+' mi to go';
+      } else row.sub = plural(rs.length,'run');
+    } else if(k === 'runs'){
+      row.v = rs.length; row.disp = plural(row.v,'run'); row.sub = mi1(sumMi(rs))+' mi';
+    } else if(k === 'long'){
+      const best = rs.reduce((m,l)=>(+l.dist||0) > (m?+m.dist:0) ? l : m, null);
+      row.v = best ? +best.dist : 0; row.disp = mi(row.v)+' mi'; row.sub = best ? fmtDate(best.date)+(best.loc?' · '+best.loc:'') : 'No runs yet';
+    } else if(k === 'pace'){
+      const need = +((c.rules||{}).minTotal||0), tot = sumMi(rs.filter(l=>l.secs>0));
+      row.v = paceOf(rs); row.disp = row.v ? fmtPace(row.v)+' /mi' : '–';
+      row.sub = mi1(tot)+' mi timed'; if(need && tot < need){ row.short = true; row.sub += ' · needs '+mi1(need-tot)+' more'; }
+    }
+    R.rows[w] = row;
+  });
+  const o = R.rows.oliver, a = R.rows.alexis;
+  if(team){
+    if(k === 'daily'){
+      const mo = new Set(missDays(c,'oliver').miss), ma = new Set(missDays(c,'alexis').miss);
+      const both = range(c.start, chLast(c)).filter(d => ranOnQ(c,'oliver',d) && ranOnQ(c,'alexis',d)).length;
+      const miss = [...new Set([...mo, ...ma])].sort();
+      R.team = {v:both, disp:plural(both,'day')+' together', sub: miss.length ? plural(miss.length,'missed day') : 'No missed days'};
+      if(strikes !== null && miss.length > strikes){ R.decided = true; R.teamWon = false; R.team.out = miss[strikes]; }
+    } else if(k === 'weekly'){
+      const wo = o.weeks, wa = a.weeks;
+      const done = wo.filter((x,i)=>x.done && wa[i] && wa[i].done).length;
+      const fails = wo.filter((x,i)=>x.closed && !(x.done || x.excused) || (wa[i] && wa[i].closed && !(wa[i].done || wa[i].excused))).length;
+      R.team = {v:done, disp:plural(done,'week')+' both hit', sub: fails ? plural(fails,'missed week') : 'No missed weeks'};
+      if(strikes !== null && fails > strikes){ R.decided = true; R.teamWon = false; }
+    } else {
+      const tot = o.v + a.v; R.team = {v:tot, disp:(k==='miles'?mi1(tot)+' mi':plural(tot,'run')), pct: tgt ? tot/tgt : 0};
+      R.team.sub = tgt ? (tot >= tgt ? 'Goal reached!' : (k==='miles'?mi1(tgt-tot)+' mi':plural(Math.ceil(tgt-tot),'run'))+' to go') : '';
+      if(tgt && tot >= tgt){ R.decided = true; R.teamWon = true; }
+    }
+    if(!R.decided && c.end && c.end < today()) R.teamWon = (k==='daily'||k==='weekly') ? true : (tgt ? R.team.v >= tgt : true);
+    if(R.decided || (c.end && c.end < today())) R.decided = true;
+    return R;
+  }
+  // versus
+  if(k === 'race'){
+    if(o.reached || a.reached){
+      R.decided = true;
+      R.winner = !a.reached ? 'oliver' : !o.reached ? 'alexis' : (o.reached < a.reached ? 'oliver' : o.reached > a.reached ? 'alexis' : 'tie');
+    }
+  }
+  if((k === 'daily' || k === 'weekly') && strikes !== null && (o.out || a.out)){
+    R.decided = true;
+    R.winner = !a.out ? 'oliver' : !o.out ? 'alexis' : (o.out > a.out ? 'oliver' : o.out < a.out ? 'alexis' : 'tie');
+  }
+  // current leader
+  if(k === 'daily' || k === 'weekly'){
+    R.leader = o.miss !== a.miss ? (o.miss < a.miss ? 'oliver' : 'alexis') : (o.v !== a.v ? (o.v > a.v ? 'oliver' : 'alexis') : null);
+  } else if(k === 'pace'){
+    const oq = o.v && !o.short, aq = a.v && !a.short;
+    R.leader = oq && aq ? (o.v < a.v ? 'oliver' : o.v > a.v ? 'alexis' : null) : oq ? 'oliver' : aq ? 'alexis' : null;
+  } else R.leader = Math.abs(o.v - a.v) < .005 ? null : (o.v > a.v ? 'oliver' : 'alexis');
+  if(!R.decided && c.end && c.end < today()){ R.decided = true; R.winner = R.leader || 'tie'; }
+  if(c.endedAt && !R.decided){ R.decided = true; R.winner = R.leader || 'tie'; }
+  return R;
+}
+const ranOnQ = (c, who, d) => qRuns(c, who).some(l => l.date === d);
+function chWins(){
+  const w = {oliver:0, alexis:0, team:0};
+  chList().forEach(c=>{
+    if(chStatus(c) !== 'finished') return;
+    const R = chResult(c);
+    if(c.mode === 'team'){ if(R.teamWon) w.team++; }
+    else if(R.winner === 'oliver' || R.winner === 'alexis') w[R.winner]++;
+  });
+  return w;
+}
+const pendingInvites = () => S.me ? chList().filter(c => c.createdBy !== S.me && !(c.accepted||{})[S.me] && chStatus(c) !== 'finished') : [];
+
+/* ============================== badges ============================== */
 function earned(who){
   const ls = logsOf(who), set = new Set();
   if(ls.length) set.add('first');
   const b = bestStreak(who);
-  if(b>=3) set.add('s3'); if(b>=7) set.add('s7'); if(b>=14) set.add('s14');
-  if(daysRun(who)>=Math.ceil(DAYS/2)) set.add('half');
-  if(daysRun(who)>=DAYS) set.add('perfect');
-  const t = totalMi(who);
-  if(t>=26.2) set.add('mara'); if(t>=50) set.add('fifty');
+  if(b>=3) set.add('s3'); if(b>=7) set.add('s7'); if(b>=14) set.add('s14'); if(b>=30) set.add('s30'); if(b>=100) set.add('s100');
+  if(bestWeekStreak(who) >= 4) set.add('w4');
+  const t = sumMi(ls);
+  if(t>=26.2) set.add('mara'); if(t>=100) set.add('c100'); if(t>=500) set.add('c500');
+  const places = new Set();
   ls.forEach(l=>{
-    if(+l.dist>=6.2) set.add('10k');
+    if(+l.dist>=6.2) set.add('10k'); if(+l.dist>=13.1) set.add('hm');
     if(+l.dist>=1 && l.secs && l.secs/l.dist < 480) set.add('speed');
     if(l.time){ const h = +l.time.split(':')[0]; if(h<7) set.add('early'); if(h>=20) set.add('owl'); }
+    if(l.together) set.add('together');
+    if(l.loc) places.add(l.loc.toLowerCase().split(',')[0].trim());
   });
+  if(places.size >= 5) set.add('explore');
+  if(breaksOf(who).some(br => br.to && ranOn(who, shift(br.to,1)))) set.add('comeback');
+  if(chWins()[who] > 0) set.add('champ');
+  if(weekWins()[who] >= 5) set.add('wk5');
   return set;
 }
 
@@ -444,104 +826,115 @@ function toast(msg, ms=2600){
   const t = $('#toast'); t.innerHTML = msg; t.classList.add('on');
   clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('on'), ms);
 }
-function ago(ts){
-  const s = (Date.now()-ts)/1000;
-  if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago';
-  if(s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago';
-}
 function fmtTime(t){ if(!t) return ''; let [h,m] = t.split(':').map(Number); const ap = h>=12?'PM':'AM'; h = h%12||12; return h+':'+pad(m)+' '+ap; }
 function applyMe(){
   const r = document.documentElement.style;
   if(S.me){ r.setProperty('--me', P[S.me].c); r.setProperty('--me-ink', P[S.me].ink); }
   const chip = $('#meChip');
-  if(S.me){ chip.textContent = P[S.me].init; chip.style.background = P[S.me].c; chip.style.color = P[S.me].ink; }
+  if(S.me){ chip.textContent = P[S.me].init; chip.style.background = P[S.me].c; chip.style.color = P[S.me].ink; chip.style.borderColor = 'transparent'; }
 }
+function ring(pct, color, sw=11){
+  const r = 50, c = 2*Math.PI*r;
+  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="${sw}"/>
+  <circle cx="60" cy="60" r="${r}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.max(0,Math.min(1,pct)))}" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 6px ${color}66)"/></svg>`;
+}
+function callout(e,title,txt,btn,cls=''){ return `<div class="callout ${cls}"><div class="emo">${e}</div><div class="txt"><b>${title}</b><span>${txt}</span></div>${btn}</div>`; }
 
 /* ============================== render: home ============================== */
-function ring(pct, color){
-  const r = 50, c = 2*Math.PI*r;
-  return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="11"/>
-  <circle cx="60" cy="60" r="${r}" fill="none" stroke="${color}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(1,pct))}" style="transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 6px ${color}66)"/></svg>`;
-}
 function runnerCard(who){
-  const p = P[who], t = today(), todays = logsOf(who).filter(l=>l.date===t);
-  const dr = daysRun(who), st = curStreak(who);
+  const p = P[who], t = today(), ws = weekStart(t), todays = IDX[who][t] || [];
+  const wr = weekRuns(who, ws), goal = weekGoal(who), st = curStreak(who), br = activeBreak(who);
   const isMe = S.me === who;
-  const tMi = todays.reduce((s,l)=>s+ +l.dist,0);
+  let status;
+  if(todays.length) status = `<div class="today-st done">✓ Ran today · ${mi(sumMi(todays))} mi</div>`;
+  else if(br){ const L = breakLabel(br); status = `<div class="today-st ice">${L.e} On break · ${L.n}</div>`; }
+  else status = `<div class="today-st not">○ Not yet today</div>`;
   return `<div class="runner ${p.cls}">
     <div class="who"><b>${p.name}</b>${isMe?'<span class="you">YOU</span>':''}</div>
-    <div class="ring">${ring(dr/DAYS, p.c)}<div class="n"><div><b>${dr}</b><small>of ${DAYS} Days</small></div></div></div>
+    <div class="ring">${ring(wr/goal, p.c)}<div class="n"><div><b>${wr}</b><small>of ${goal} this week</small></div></div></div>
     <div class="stats">
-      <div><b>${st}${st?' 🔥':''}</b><small>Streak</small></div>
-      <div><b>${mi(totalMi(who))}</b><small>Miles</small></div>
+      <div><b>${st}${st?' 🔥':''}${br&&!todays.length?' 🧊':''}</b><small>Day Streak</small></div>
+      <div><b>${mi1(sumMi(logsIn(who, t.slice(0,4)+'-01-01', t)))}</b><small>Miles ${t.slice(0,4)}</small></div>
     </div>
-    ${inChallenge(t) ? (todays.length
-      ? `<div class="today-st done">✓ Ran today · ${mi(tMi)} mi</div>`
-      : `<div class="today-st not">○ Not yet today</div>`) : ''}
+    ${status}
   </div>`;
 }
+function weekStrip(){
+  const t = today(), ws = weekStart(t);
+  return '<div class="week">' + range(ws, shift(ws,6)).map(d=>{
+    const fut = d > t, o = ranOn('oliver',d), a = ranOn('alexis',d);
+    const ob = !o && breakOn('oliver',d) && !fut, ab = !a && breakOn('alexis',d) && !fut;
+    return `<button class="wd ${d===t?'today':''} ${fut?'future':''}" onclick="openDay('${d}')"><div class="sq"><i class="${o?'o':''} ${ob?'brk':''}"></i><i class="${a?'a':''} ${ab?'brk':''}"></i></div><small>${'MTWTFSS'[(parse(d).getDay()+6)%7]}</small></button>`;
+  }).join('') + '</div>';
+}
 function renderHome(){
-  const n = curDay(), t = today();
-  let eyebrow, big, sub;
-  if(n < 1){ eyebrow='Starting Soon'; big=`${1-n}<span>${1-n===1?'day':'days'} to go</span>`; sub='Challenge kicks off '+fmtDate(startDate(),{weekday:'long',month:'long',day:'numeric'}); }
-  else if(n > DAYS){ eyebrow='Challenge Complete'; big=`${DAYS}<span>/ ${DAYS}</span>`; sub='Finished '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric'})+'. Check Stats for the final scoreboard, or keep it going.<button class="btn pri full" style="margin-top:14px" onclick="openExtend()">Extend The Challenge</button>'; }
-  else { eyebrow='Day '+n+' · '+fmtDate(t,{weekday:'long',month:'short',day:'numeric'}); big=`${n}<span>/ ${DAYS}</span>`; sub = (DAYS-n===0) ? 'Final day. Finish strong.' : (DAYS-n)+' days left · ends '+fmtDate(dateFor(DAYS));
-    if(DAYS-n<=3) sub += ' · <a href="#" onclick="openExtend();return false" style="color:var(--me,#fff);font-weight:700">Keep Going? Extend</a>'; }
+  const t = today(), ws = weekStart(t);
+  const om = sumMi(logsIn('oliver', ws, t)), am = sumMi(logsIn('alexis', ws, t)), tot = om + am;
+  const lead = Math.abs(om-am) < .005 ? null : (om > am ? 'oliver' : 'alexis');
+  const ww = weekWins(), daysLeft = 6 - diffDays(ws, t), ts = togetherStreak();
 
-  let track = '';
-  for(let i=1;i<=DAYS;i++){
-    const d = dateFor(i), fut = d > t;
-    track += `<i class="${d===t?'today':''} ${fut?'future':''}">${ranOn('oliver',d)?'<b class="o"></b>':''}${ranOn('alexis',d)?'<b class="a"></b>':''}</i>`;
-  }
-
-  // callout
   let call = '';
-  if(S.me && inChallenge(t)){
-    const me = S.me, them = OTHER[me];
+  if(S.me){
+    const me = S.me, them = OTHER[me], myBr = activeBreak(me), theirBr = activeBreak(them);
     const iRan = ranOn(me,t), theyRan = ranOn(them,t);
-    if(!iRan && theyRan) call = callout('👀', P[them].name+' already ran today', 'Your square is still empty. Your move.', `<button class="btn pri" onclick="openLog()">Log Run</button>`);
-    else if(!iRan) call = callout('👟', 'Today’s run is waiting', 'Even one easy mile keeps the streak alive.', `<button class="btn pri" onclick="openLog()">Log Run</button>`);
+    if(myBr && !iRan){ const L = breakLabel(myBr); call = callout(L.e, 'You’re on a break · '+L.n, L.span+'. Your streak is frozen, not lost.', `<button class="btn ice sm" onclick="endBreak('${myBr.id}')">I’m Back</button>`, 'ice'); }
+    else if(!iRan && theyRan) call = callout('👀', P[them].name+' already ran today', 'Your square is still empty. Your move.', `<button class="btn pri" onclick="openLog()">Log Run</button>`);
+    else if(!iRan) call = callout('👟', 'Today’s run is waiting', 'Even one easy mile keeps the streak alive. Need a day off? <a href="#" onclick="openBreak();return false" style="color:var(--ice);font-weight:700">Take a break</a>', `<button class="btn pri" onclick="openLog()">Log Run</button>`);
+    else if(!theyRan && theirBr){ const L = breakLabel(theirBr); call = callout(L.e, P[them].name+' is on a break', L.n+' · '+L.span+'. No nudging — send some love instead.', ''); }
     else if(!theyRan) call = callout('📣', P[them].name+' hasn’t run yet', 'Send a little push their way.', `<button class="btn" onclick="openNudge()">Nudge</button>`);
-    else call = callout('🤝', 'You both ran today', 'Square filled on both sides. That’s how it’s done.', '');
+    else call = callout('🤝', 'You both ran today', ts > 1 ? ts+' days in a row together. Keep it going.' : 'Both squares filled. That’s how it’s done.', '');
   }
-
+  const inv = pendingInvites();
+  const invite = inv.length ? callout('📨', P[inv[0].createdBy].name+' challenged you', esc(inv[0].emoji+' '+inv[0].name), `<button class="btn pri sm" onclick="go('ch')">View</button>`) : '';
+  const live = chList().filter(c => chStatus(c) === 'active').sort((a,b)=>(a.end||'9').localeCompare(b.end||'9'));
   const recent = Object.values(S.logs).sort(sortLogs).slice(0,2);
-  const q = QUOTES[(Math.max(1,n)+new Date().getDate()) % QUOTES.length];
+  const q = QUOTES[(diffDays('2026-01-01', t)) % QUOTES.length];
 
   $('#v-home').innerHTML = `
     <div class="hero">
-      <div class="eyebrow">${eyebrow}</div>
-      <div class="big">${big}</div>
-      <div class="sub">${sub}</div>
-      <div class="track ${DAYS>30?'long':''}" style="grid-template-columns:repeat(${Math.min(DAYS,30)},1fr)">${track}</div>
-      <div class="track-legend"><span>${fmtDate(startDate())}</span><span style="color:var(--o)">● Oliver</span><span style="color:var(--a)">● Alexis</span><span>${fmtDate(dateFor(DAYS))}</span></div>
+      <div class="eyebrow"><span>This Week</span><span>${daysLeft ? plural(daysLeft,'day')+' left' : 'Last day'}</span></div>
+      <div class="wkduel">
+        <div class="side"><b style="color:var(--o)">${mi1(om)}</b><small>Oliver mi${lead==='oliver'?'<span class="crown">👑</span>':''}</small></div>
+        <div class="vs">VS</div>
+        <div class="side r"><b style="color:var(--a)">${mi1(am)}</b><small>${lead==='alexis'?'<span class="crown">👑</span>':''}Alexis mi</small></div>
+      </div>
+      <div class="wkbar"><i class="o" style="width:${tot?om/tot*100:50}%"></i><i class="a" style="width:${tot?am/tot*100:50}%"></i></div>
+      ${weekStrip()}
+      <div class="hero-foot"><span>Week Wins <b style="color:var(--o)">${ww.oliver}</b> – <b style="color:var(--a)">${ww.alexis}</b></span><span>${ts ? '🤝 '+ts+'-day together streak' : '🧊 = break day'}</span></div>
     </div>
+    ${invite}
     <div class="duel">${runnerCard('oliver')}${runnerCard('alexis')}</div>
     ${call}
+    ${live.length ? `<div class="sec-h"><h2>Live Challenges</h2><button onclick="go('ch')">All</button></div>${live.slice(0,2).map(c=>chCard(c, true)).join('')}`
+      : `<div class="sec-h"><h2>Challenges</h2></div>${callout('🏆','No challenge running','Set the rules, pick the stakes, and make it official.',`<button class="btn pri sm" onclick="openNewCh()">Start One</button>`)}`}
     <div class="sec-h"><h2>Latest Runs</h2>${recent.length?'<button onclick="go(\'feed\')">See All</button>':''}</div>
     ${recent.length ? recent.map(postHTML).join('') : `<div class="empty"><b>🏁</b>No runs yet. Tap the + to log the first one.</div>`}
     <div class="quote"><b>Daily Fuel</b>${q}</div>`;
   hydratePhotos();
 }
-function callout(e,title,txt,btn){ return `<div class="callout"><div class="emo">${e}</div><div class="txt"><b>${title}</b><span>${txt}</span></div>${btn}</div>`; }
 
 /* ============================== render: feed ============================== */
 function sortLogs(a,b){ return (b.date+(b.time||'')).localeCompare(a.date+(a.time||'')) || (b.createdAt||0)-(a.createdAt||0); }
 function postHTML(l){
-  const p = P[l.who], n = dayNum(l.date), mine = l.who === S.me;
-  const pace = (l.dist>0 && l.secs>0) ? l.secs/l.dist : 0;
-  const cheers = l.cheers || {};
+  const p = P[l.who]; if(!p) return '';
+  const mine = l.who === S.me, pace = (l.dist>0 && l.secs>0) ? l.secs/l.dist : 0, cheers = l.cheers || {};
   const reacts = REACTS.map(e=>{
-    const by = Object.keys(cheers).filter(k => (cheers[k]||[]).includes(e));
-    const on = S.me && by.includes(S.me);
+    const by = Object.keys(cheers).filter(k => (cheers[k]||[]).includes(e)), on = S.me && by.includes(S.me);
     return `<button class="react ${on?'mine':''}" onclick="toggleReact('${l.id}','${e}')">${e}${by.length?`<small>${by.length}</small>`:''}</button>`;
   }).join('');
   const comments = (l.comments||[]).map(c=>`<div class="cmt"><b class="${P[c.who]?.cls||''}">${esc(P[c.who]?.name||c.who)}</b><span>${esc(c.text)}</span></div>`).join('');
   const where = [fmtDate(l.date,{weekday:'short',month:'short',day:'numeric'}), l.time?fmtTime(l.time):'', l.loc?'📍 '+esc(l.loc):''].filter(Boolean).join(' · ');
+  const shoe = l.shoe && (S.people[l.who].shoes||[]).find(s=>s.id===l.shoe);
+  const tags = [
+    ...prTags(l).map(x=>`<span class="tag pr">${x}</span>`),
+    l.type ? `<span class="tag c">${esc(l.type)}</span>` : '',
+    l.feel ? `<span class="tag">${FEELS[l.feel-1][0]} ${FEELS[l.feel-1][1]}</span>` : '',
+    l.together ? `<span class="tag">🤝 Together</span>` : '',
+    shoe ? `<span class="tag">👟 ${esc(shoe.name)}</span>` : ''
+  ].join('');
   return `<article class="post ${p.cls}" id="post-${l.id}">
     <div class="post-h"><div class="av">${p.init}</div>
       <div class="meta"><b>${p.name}</b><div>${where}</div></div>
-      ${n>=1&&n<=DAYS?`<span class="daytag">DAY ${n}</span>`:''}
       ${mine?`<button class="more" onclick="openLog('${l.id}')" aria-label="Edit">•••</button>`:''}
     </div>
     <div class="post-stats">
@@ -549,7 +942,7 @@ function postHTML(l){
       <div><small>Time</small><b>${l.secs?fmtDur(l.secs):'–'}</b></div>
       <div><small>Pace</small><b>${fmtPace(pace)}<i>${pace?'/mi':''}</i></b></div>
     </div>
-    ${(l.type||l.feel)?`<div class="post-tags">${l.type?`<span class="tag c">${esc(l.type)}</span>`:''}${l.feel?`<span class="tag">${FEELS[l.feel-1][0]} ${FEELS[l.feel-1][1]}</span>`:''}</div>`:''}
+    ${tags.trim()?`<div class="post-tags">${tags}</div>`:''}
     ${l.notes?`<div class="post-notes">${esc(l.notes)}</div>`:''}
     ${l.hasPhoto?`<div class="post-photo ph" data-photo="${l.id}">Loading Photos…</div>`:''}
     <div class="post-actions">${reacts}</div>
@@ -558,114 +951,352 @@ function postHTML(l){
     </div>
   </article>`;
 }
+function breakPost(who, b){
+  const L = breakLabel(b), p = P[who], mine = who === S.me, live = !b.to || b.to >= today();
+  return `<div class="brkpost"><div class="e">${L.e}</div><div class="t"><b style="color:${p.c}">${p.name}</b> ${live?'is taking':'took'} a break · <b>${L.n}</b><br>${L.span}${b.note?' · '+esc(b.note):''}</div>
+    ${mine && live && breakOn(who, today()) ? `<button class="btn ice sm" onclick="endBreak('${b.id}')">I’m Back</button>` : ''}</div>`;
+}
 function renderFeed(){
   const f = S.feedFilter;
-  const ls = Object.values(S.logs).filter(l => f==='all' || l.who===f).sort(sortLogs);
+  let items = [];
+  if(f !== 'prs') WHO.forEach(w=>{ if(f==='all' || f===w) breaksOf(w).forEach(b=>items.push({k:(b.from)+'~', html:()=>breakPost(w,b)})); });
+  Object.values(S.logs).forEach(l=>{
+    if(f==='all' || l.who===f || (f==='prs' && prTags(l).length)) items.push({k:l.date+(l.time||'00:00'), l});
+  });
+  items.sort((a,b)=>b.k.localeCompare(a.k));
   $('#v-feed').innerHTML = `
     <div class="chips">
-      ${[['all','Everyone'],['oliver','Oliver'],['alexis','Alexis']].map(([k,t])=>`<button class="chip ${f===k?'on':''}" onclick="S.feedFilter='${k}';renderFeed()">${t}</button>`).join('')}
+      ${[['all','Everyone'],['oliver','Oliver'],['alexis','Alexis'],['prs','🏆 Records']].map(([k,t])=>`<button class="chip ${f===k?'on':''}" onclick="S.feedFilter='${k}';renderFeed()">${t}</button>`).join('')}
     </div>
-    ${ls.length ? ls.map(postHTML).join('') : `<div class="empty"><b>🏃</b>Nothing here yet.</div>`}`;
+    ${items.length ? items.map(i=>i.l ? postHTML(i.l) : i.html()).join('') : `<div class="empty"><b>🏃</b>Nothing here yet.</div>`}`;
   hydratePhotos();
 }
 
-/* ============================== render: calendar ============================== */
-function renderCal(){
-  const t = today();
-  let cells = '';
-  for(let i=1;i<=DAYS;i++){
-    const d = dateFor(i), o = ranOn('oliver',d), a = ranOn('alexis',d);
-    const fut = d > t;
-    cells += `<button class="cell ${o?'ho':''} ${a?'ha':''} ${d===t?'today':''} ${fut?'future':''}" onclick="openDay('${d}')">
-      <div class="halves"><i class="o ${o?'on':''}"></i><i class="a ${a?'on':''}"></i></div>
-      <span class="d">${i}</span><span class="dt">${fmtDate(d,{month:'short',day:'numeric'})}</span>
-      ${o&&a?'<span class="crown">⭐</span>':''}
-    </button>`;
-  }
-  const both = Array.from({length:DAYS},(_,i)=>dateFor(i+1)).filter(d=>ranOn('oliver',d)&&ranOn('alexis',d)).length;
-  $('#v-cal').innerHTML = `
-    <div class="sec-h" style="margin-top:4px"><h2>The ${DAYS} Squares</h2><span style="font-size:13px;color:var(--tx2);font-weight:600">⭐ ${both} Together</span></div>
-    <div class="cal">${cells}</div>
-    <div class="legend">
-      <span><i style="background:var(--o)"></i>Oliver Ran</span>
-      <span><i style="background:var(--a)"></i>Alexis Ran</span>
-      <span>⭐ Both Ran</span>
-    </div>
-    <p class="small-note" style="text-align:center">Tap any square to see that day's runs or fill in a missed one.</p>`;
+/* ============================== render: challenges ============================== */
+function chDates(c){
+  const st = chStatus(c), t = today();
+  const span = fmtDate(c.start) + (c.end ? ' – '+fmtDate(c.end) : ' · no end date');
+  if(st === 'upcoming') return span+' · starts in '+plural(diffDays(t, c.start),'day');
+  if(st === 'active' && c.end){ const left = diffDays(t, c.end); return span+' · '+(left ? plural(left,'day')+' left' : 'last day'); }
+  return span;
 }
-function openDay(d){
-  const ls = Object.values(S.logs).filter(l=>l.date===d).sort(sortLogs);
-  const n = dayNum(d), fut = d > today();
-  openSheet(`<h3>Day ${n} <button onclick="closeSheet()">Close</button></h3>
-    <p class="small-note" style="margin-top:-10px;margin-bottom:10px">${fmtDate(d,{weekday:'long',month:'long',day:'numeric'})}</p>
-    ${ls.length ? ls.map(postHTML).join('') : `<div class="empty" style="padding:30px"><b>${fut?'⏳':'🫥'}</b>${fut?'This day hasn’t happened yet.':'No runs logged.'}</div>`}
-    ${!fut && S.me ? `<button class="btn pri full" style="margin-top:16px" onclick="openLog(null,'${d}')">Log ${P[S.me].name}'s Run For This Day</button>`:''}`);
-  hydratePhotos();
+function rulesList(c){
+  const r = c.rules || {}, k = c.kind, out = [];
+  if(k==='race' || (KINDS[k].teamTarget && c.mode==='team')) out.push('Target: '+c.target+' '+(KINDS[k].unit||''));
+  if(k==='weekly') out.push('Target: '+c.target+' '+((r.wkUnit==='miles')?'miles':'runs')+' every week');
+  if(+r.minDist) out.push('Runs count if '+r.minDist+'+ mi');
+  if(r.types && r.types.length) out.push('Only: '+r.types.join(', '));
+  if(k==='daily' && +r.rest) out.push(plural(+r.rest,'free rest day')+' per week');
+  if((k==='daily'||k==='weekly')){
+    const s = strikesOf(c);
+    out.push(s===null ? 'No elimination' : s===0 ? 'Sudden death: one miss and you’re out' : plural(s,'strike')+' allowed, then you’re out');
+    out.push(r.breaksPause===false ? 'Break days count as misses' : 'Break days don’t count as misses');
+  }
+  if(k==='pace' && +r.minTotal) out.push('Need '+r.minTotal+'+ timed miles to qualify');
+  return out;
+}
+function chCard(c, compact){
+  const st = chStatus(c), R = chResult(c), k = KINDS[c.kind] || KINDS.miles, team = c.mode === 'team';
+  const invited = S.me && c.createdBy !== S.me && !(c.accepted||{})[S.me] && st !== 'finished';
+  const waiting = S.me && c.createdBy === S.me && !(c.accepted||{})[OTHER[S.me]] && st !== 'finished';
+  const total = c.end ? diffDays(c.start, c.end) + 1 : 0, gone = Math.max(0, Math.min(total, diffDays(c.start, today()) + 1));
+  let stand = '';
+  if(team){
+    const pct = R.team.pct != null ? R.team.pct : null;
+    const ov = R.rows.oliver.v, av = R.rows.alexis.v, tgt = +c.target || 0;
+    stand = `<div class="stand"><div class="srow" style="margin-top:0"><div class="sbody"><div class="stop"><b>${R.team.disp}${tgt&&KINDS[c.kind].teamTarget?' <span style="font-family:Inter;font-size:13px;color:var(--tx3)">/ '+tgt+'</span>':''}</b><small>${R.team.sub||''}</small></div>
+      ${pct!=null ? `<div class="teambar"><i class="o" style="width:${Math.min(100,(tgt?ov/tgt:0)*100)}%"></i><i class="a" style="width:${Math.min(100-(tgt?ov/tgt:0)*100,(tgt?av/tgt:0)*100)}%"></i></div>` : ''}
+      </div></div>
+      ${WHO.map(w=>`<div class="srow c-${P[w].cls}"><div class="av">${P[w].init}</div><div class="sbody"><div class="stop"><b style="font-size:17px">${R.rows[w].disp}</b><small>${R.rows[w].sub}</small></div></div></div>`).join('')}</div>`;
+  } else {
+    const vals = WHO.map(w=>R.rows[w].v), max = c.kind==='pace' ? 0 : Math.max(...vals, c.kind==='race'?(+c.target||0):0, .0001);
+    stand = `<div class="stand">${WHO.map(w=>{
+      const r = R.rows[w];
+      let pct = c.kind==='pace' ? (r.v ? Math.min(...vals.filter(Boolean))/r.v : 0) : r.v/max;
+      const crown = st==='finished' ? (R.winner===w ? '<span class="lead">🏆</span>' : '') : (R.leader===w ? '<span class="lead">👑</span>' : '');
+      return `<div class="srow c-${P[w].cls} ${r.out?'out':''}"><div class="av">${P[w].init}</div><div class="sbody">
+        <div class="stop"><b>${r.disp}${crown}</b><small>${r.out ? '❌ Out '+fmtDate(r.out) : r.sub}${c.kind==='daily'&&st==='active'&&!r.out ? (r.today?' · ✓ today':'') : ''}</small></div>
+        <div class="sbar"><i style="width:${Math.max(2,pct*100)}%"></i></div></div></div>`;
+    }).join('')}</div>`;
+  }
+  let result = '';
+  if(st === 'finished'){
+    if(team) result = R.teamWon ? `<div class="result"><span class="e">🎉</span>Team goal crushed. You did it together.</div>` : `<div class="result"><span class="e">😮‍💨</span>Didn’t make it this time. Run it back?</div>`;
+    else result = R.winner==='tie' || !R.winner ? `<div class="result"><span class="e">🤝</span>Dead even. It’s a tie.</div>` : `<div class="result" style="color:${P[R.winner].c}"><span class="e">🏆</span>${P[R.winner].name} wins${c.stakes?' — '+esc(P[OTHER[R.winner]].name)+' pays up':''}</div>`;
+  }
+  const actions = [];
+  if(!compact){
+    if(invited) actions.push(`<button class="btn pri" onclick="acceptCh('${c.id}')">Accept</button>`, `<button class="btn" onclick="declineCh('${c.id}')">Decline</button>`);
+    if(c.createdBy === S.me && st !== 'finished') actions.push(`<button class="btn" onclick="endCh('${c.id}')">End Now</button>`);
+    if(c.createdBy === S.me || st === 'finished') actions.push(`<button class="btn ghost danger" onclick="deleteCh('${c.id}')">Delete</button>`);
+    if(st === 'finished') actions.push(`<button class="btn" onclick="rematch('${c.id}')">Rematch</button>`);
+  }
+  return `<div class="ch ${invited?'invite':''} ${st==='finished'?'done':''}" ${compact?`onclick="go('ch')" style="cursor:pointer"`:''}>
+    <div class="ch-h"><div class="e">${esc(c.emoji||k.e)}</div><div class="tt"><b>${esc(c.name)}</b><small>${chDates(c)}</small></div></div>
+    <div class="meta"><span class="tag">${k.e} ${k.n}</span><span class="tag">${team?'🤝 Team':'⚔️ Versus'}</span>
+      ${invited?'<span class="tag pr">📨 Invite for you</span>':''}${waiting?`<span class="tag">⏳ Waiting for ${P[OTHER[S.me]].name}</span>`:''}
+      ${st==='upcoming'?'<span class="tag ice">Upcoming</span>':''}</div>
+    ${total && st==='active' ? `<div class="timebar"><i style="width:${gone/total*100}%"></i></div>` : ''}
+    ${st==='upcoming' ? '' : stand}
+    ${!compact ? `<ul class="rules">${rulesList(c).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+    ${c.stakes ? `<div class="stakes">🎲 Stakes: ${esc(c.stakes)}</div>` : ''}
+    ${result}
+    ${actions.length ? `<div class="row-btns">${actions.join('')}</div>` : ''}
+  </div>`;
+}
+function renderCh(){
+  const all = chList(), w = chWins(), f = S.chFilter;
+  const live = all.filter(c => chStatus(c) !== 'finished').sort((a,b)=>a.start.localeCompare(b.start));
+  const done = all.filter(c => chStatus(c) === 'finished').sort((a,b)=>(b.end||b.endedAt||'').toString().localeCompare((a.end||a.endedAt||'').toString()));
+  const list = f === 'live' ? live : done;
+  $('#v-ch').innerHTML = `
+    <div class="trophies">
+      <div class="t" style="color:var(--o)">${w.oliver}<small>Oliver</small></div>
+      <div class="mid">🏆<small>Trophies</small>${w.team?`<small style="margin-top:4px">🤝 ${w.team} team</small>`:''}</div>
+      <div class="t" style="color:var(--a);text-align:right">${w.alexis}<small>Alexis</small></div>
+    </div>
+    <button class="btn pri full" style="margin-top:14px" onclick="openNewCh()">+ New Challenge</button>
+    <div class="chips" style="margin-top:18px">
+      <button class="chip ${f==='live'?'on':''}" onclick="S.chFilter='live';renderCh()">Live & Upcoming · ${live.length}</button>
+      <button class="chip ${f==='done'?'on':''}" onclick="S.chFilter='done';renderCh()">Finished · ${done.length}</button>
+    </div>
+    ${list.length ? list.map(c=>chCard(c)).join('') : `<div class="empty"><b>${f==='live'?'🏁':'🏆'}</b>${f==='live'?'No challenges running. Start one above.':'No finished challenges yet.'}</div>`}`;
+}
+
+/* ============================== new challenge ============================== */
+let CD = null;
+function openNewCh(tpl){
+  if(!S.me) return pickWho();
+  const t = today();
+  CD = {name:'', emoji:'🔥', kind:'daily', mode:'versus', start:t, days:14, end:shift(t,13), noEnd:false, target:'', stakes:'',
+        rules:{minDist:'', types:[], breaksPause:true, rest:0, strikes:'', wkUnit:'runs', minTotal:''}};
+  if(tpl) applyTpl(tpl, true);
+  renderNewCh();
+}
+function applyTpl(i, silent){
+  const T = TEMPLATES[i]; if(!T) return;
+  Object.assign(CD, {name:T.name, emoji:T.emoji, kind:T.kind, mode:T.mode, target:T.target||''});
+  CD.rules = {minDist:'', types:[], breaksPause:true, rest:0, strikes:'', wkUnit:'runs', minTotal:'', ...(T.rules||{})};
+  if(T.days){ CD.noEnd = false; CD.days = T.days; CD.end = shift(CD.start, T.days-1); } else { CD.noEnd = true; CD.days = 0; }
+  if(!silent) renderNewCh();
+}
+function renderNewCh(){
+  const k = KINDS[CD.kind], team = CD.mode === 'team', r = CD.rules;
+  const needTarget = k.target || (k.teamTarget && team);
+  const unit = CD.kind==='weekly' ? (r.wkUnit==='miles'?'miles / week':'runs / week') : (k.unit==='mi'?'miles':'runs');
+  const strikeOpts = [['','Unlimited'],['0','Sudden Death'],['1','1 Strike'],['2','2 Strikes'],['3','3 Strikes']];
+  openSheet(`<h3>New Challenge <button onclick="closeSheet()">Cancel</button></h3>
+    <div class="fld"><label>Quick Start</label><div class="tpl">${TEMPLATES.map((T,i)=>`<button onclick="applyTpl(${i})"><span>${T.emoji}</span><div>${T.name}<small>${T.sub}</small></div></button>`).join('')}</div></div>
+    <div class="fld"><label>Name</label><input class="in" id="cName" maxlength="40" placeholder="December Showdown" value="${esc(CD.name)}"></div>
+    <div class="fld"><label>Icon</label><div class="emojis">${CH_EMOJIS.map(e=>`<button class="${CD.emoji===e?'on':''}" onclick="CD.emoji='${e}';renderNewCh()">${e}</button>`).join('')}</div></div>
+    <div class="fld"><label>Type</label><div class="kinds">${Object.entries(KINDS).map(([id,K])=>`<button class="${CD.kind===id?'on':''}" onclick="setKind('${id}')"><b>${K.e} ${K.n}</b><small>${K.d}</small></button>`).join('')}</div></div>
+    <div class="fld"><label>Format</label><div class="opts">
+      <button class="opt ${!team?'on':''}" onclick="CD.mode='versus';renderNewCh()">⚔️ Versus</button>
+      ${k.team ? `<button class="opt ${team?'on':''}" onclick="CD.mode='team';renderNewCh()">🤝 Team</button>` : ''}
+    </div><div class="small-note">${team ? 'You’re on the same side. Hit the goal together.' : 'Head to head. One winner.'}</div></div>
+    ${CD.kind==='weekly' ? `<div class="fld"><label>Count By</label><div class="opts"><button class="opt ${r.wkUnit!=='miles'?'on':''}" onclick="CD.rules.wkUnit='runs';renderNewCh()">Runs</button><button class="opt ${r.wkUnit==='miles'?'on':''}" onclick="CD.rules.wkUnit='miles';renderNewCh()">Miles</button></div></div>` : ''}
+    ${needTarget ? `<div class="fld"><label>Target</label><div class="bigin"><input id="cTarget" type="number" inputmode="decimal" min="0" placeholder="0" value="${CD.target}"><span>${unit}</span></div></div>` : ''}
+    <div class="fld"><label>When</label>
+      <div class="row2"><div><span class="lab">Start</span><input class="in" type="date" id="cStart" value="${CD.start}"></div>
+        <div><span class="lab">End</span><input class="in" type="date" id="cEnd" value="${CD.noEnd?'':CD.end}" ${CD.noEnd?'disabled':''}></div></div>
+      <div class="opts" style="margin-top:10px">${[7,14,30,60,90].map(n=>`<button class="opt ${!CD.noEnd&&CD.days===n?'on':''}" onclick="setLen(${n})">${n} Days</button>`).join('')}
+        ${(CD.kind==='race' || (needTarget && team)) ? `<button class="opt ${CD.noEnd?'on':''}" onclick="CD.noEnd=true;CD.days=0;renderNewCh()">Until Someone Wins</button>` : ''}</div>
+    </div>
+    <div class="fld"><label>Rules</label>
+      <div class="row2">
+        <div><span class="lab">Min Distance / Run</span><input class="in" id="cMin" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Any" value="${r.minDist}"></div>
+        ${CD.kind==='pace' ? `<div><span class="lab">Min Total Miles</span><input class="in" id="cMinTot" type="number" inputmode="decimal" min="0" placeholder="None" value="${r.minTotal}"></div>` : (CD.kind==='daily' ? `<div><span class="lab">Free Rest Days / Week</span><select class="in" id="cRest">${[0,1,2,3].map(n=>`<option value="${n}" ${+r.rest===n?'selected':''}>${n}</option>`).join('')}</select></div>` : '<div></div>')}
+      </div>
+      ${(CD.kind==='daily'||CD.kind==='weekly') ? `
+        <span class="lab" style="margin-top:12px">Elimination</span>
+        <div class="opts">${strikeOpts.map(([v,t])=>`<button class="opt ${String(r.strikes)===v?'on':''}" onclick="CD.rules.strikes='${v}';renderNewCh()">${t}</button>`).join('')}</div>
+        <div class="toggle" style="margin-top:12px" onclick="CD.rules.breaksPause=!CD.rules.breaksPause;renderNewCh()"><span>Breaks Are Excused<small>Days in break mode (sick, injured, travel…) don’t count as misses</small></span><div class="sw ${r.breaksPause!==false?'on':''}"></div></div>` : ''}
+      <span class="lab" style="margin-top:12px">Run Types That Count</span>
+      <div class="opts">${TYPES.map(t=>`<button class="opt ${r.types.includes(t)?'on':''}" onclick="toggleType('${t}')">${t}</button>`).join('')}</div>
+      <div class="small-note">${r.types.length ? 'Only these types count.' : 'None picked = every run counts.'}</div>
+    </div>
+    <div class="fld"><label>Stakes <span style="text-transform:none;letter-spacing:0;font-weight:600">· optional</span></label><input class="in" id="cStakes" maxlength="80" placeholder="Loser buys poke bowls" value="${esc(CD.stakes)}"></div>
+    <button class="btn pri full" onclick="createCh()">Send Challenge To ${P[OTHER[S.me]].name}</button>`);
+  const bind = (id, fn) => { const el = $(id); if(el) el.oninput = el.onchange = e => fn(e.target.value); };
+  bind('#cName', v=>CD.name=v); bind('#cTarget', v=>CD.target=v); bind('#cStakes', v=>CD.stakes=v);
+  bind('#cMin', v=>CD.rules.minDist=v); bind('#cMinTot', v=>CD.rules.minTotal=v); bind('#cRest', v=>CD.rules.rest=+v);
+  const cs = $('#cStart'); cs.onchange = e=>{ CD.start = e.target.value || today(); if(!CD.noEnd && CD.days) CD.end = shift(CD.start, CD.days-1); renderNewCh(); };
+  const ce = $('#cEnd'); ce.onchange = e=>{ CD.end = e.target.value; CD.days = CD.end ? diffDays(CD.start, CD.end)+1 : 0; };
+}
+function setKind(id){ CD.kind = id; if(!KINDS[id].team) CD.mode = 'versus'; if(CD.noEnd && !(id==='race' || (KINDS[id].teamTarget && CD.mode==='team'))){ CD.noEnd=false; setLen(14); return; } renderNewCh(); }
+function setLen(n){ CD.noEnd = false; CD.days = n; CD.end = shift(CD.start, n-1); renderNewCh(); }
+function toggleType(t){ const s = new Set(CD.rules.types); s.has(t) ? s.delete(t) : s.add(t); CD.rules.types = [...s]; renderNewCh(); }
+function createCh(){
+  const k = KINDS[CD.kind], team = CD.mode === 'team', needTarget = k.target || (k.teamTarget && team);
+  const target = parseFloat(CD.target);
+  if(needTarget && !(target > 0)) return toast('Set a target first');
+  if(!CD.noEnd && (!CD.end || CD.end < CD.start)) return toast('End date must be after the start');
+  const name = CD.name.trim() || (k.n + ' · ' + fmtDate(CD.start));
+  const r = CD.rules;
+  const c = {
+    id: 'ch_'+uid(), name, emoji: CD.emoji, kind: CD.kind, mode: CD.mode,
+    start: CD.start, end: CD.noEnd ? '' : CD.end, target: needTarget ? target : '',
+    rules: {minDist: +r.minDist || 0, types: r.types, breaksPause: r.breaksPause !== false, rest: +r.rest || 0,
+            strikes: r.strikes === '' ? '' : +r.strikes, wkUnit: r.wkUnit || 'runs', minTotal: +r.minTotal || 0},
+    stakes: CD.stakes.trim(), createdBy: S.me, accepted: {[S.me]: true}, createdAt: Date.now(), updatedAt: Date.now()
+  };
+  S.ch[c.id] = c; saveLocal(); pushCh(c);
+  closeSheet(); S.chFilter = 'live'; go('ch');
+  confetti(P[S.me].c);
+  toast(`${c.emoji} Challenge sent to ${P[OTHER[S.me]].name}`);
+}
+function acceptCh(id){ const c = S.ch[id]; if(!c) return; c.accepted = {...(c.accepted||{}), [S.me]:true}; c.updatedAt = Date.now(); saveLocal(); render(); confetti(P[S.me].c); toast('⚔️ Challenge accepted. Game on.');
+  if(syncOn) FS.updateDoc(FS.doc(db,'run_config',id), {['accepted.'+S.me]: true, updatedAt: c.updatedAt}).catch(e=>syncErr(e)); }
+function declineCh(id){ if(!confirm('Decline this challenge?')) return; const c = S.ch[id]; if(!c) return; c.declined = S.me; saveLocal(); render(); toast('Challenge declined');
+  if(syncOn) FS.updateDoc(FS.doc(db,'run_config',id), {declined: S.me, updatedAt: Date.now()}).catch(e=>syncErr(e)); }
+function endCh(id){ if(!confirm('End this challenge now? Standings freeze at today.')) return; const c = S.ch[id]; if(!c) return;
+  c.end = today(); c.endedAt = Date.now(); saveLocal(); render();
+  if(syncOn) FS.updateDoc(FS.doc(db,'run_config',id), {end: c.end, endedAt: c.endedAt, updatedAt: Date.now()}).catch(e=>syncErr(e)); }
+function deleteCh(id){ if(!confirm('Delete this challenge for both of you?')) return; delete S.ch[id]; saveLocal(); render(); toast('Challenge deleted');
+  if(syncOn) FS.deleteDoc(FS.doc(db,'run_config',id)).catch(e=>syncErr(e)); }
+function rematch(id){
+  const o = S.ch[id]; if(!o) return;
+  openNewCh();
+  const len = o.end ? diffDays(o.start, o.end) + 1 : 0;
+  Object.assign(CD, {name: o.name.replace(/( · )?Rematch.*$/,'') + ' · Rematch', emoji:o.emoji, kind:o.kind, mode:o.mode, target:o.target||'', stakes:o.stakes||'',
+    rules:{...CD.rules, ...o.rules, strikes: o.rules?.strikes ?? ''}});
+  if(len){ CD.noEnd=false; CD.days=len; CD.end=shift(CD.start,len-1); } else CD.noEnd = true;
+  renderNewCh();
+}
+function checkChEvents(){
+  if(!S.me || $('#sheet').classList.contains('on')) return;
+  for(const c of chList()){
+    if(chStatus(c) !== 'finished' || S.seenCh[c.id]) continue;
+    if(c.start > today()) continue;
+    S.seenCh[c.id] = 1; LS.set('rc_seenCh', S.seenCh);
+    if(Date.now() - (c.createdAt||0) < 5000) continue;
+    const R = chResult(c), team = c.mode === 'team';
+    const iWon = !team && R.winner === S.me, tie = !team && (R.winner === 'tie' || !R.winner);
+    const e = team ? (R.teamWon ? '🎉' : '😮‍💨') : (iWon ? '🏆' : tie ? '🤝' : '🥈');
+    const h = team ? (R.teamWon ? 'Team Goal Hit' : 'So Close') : (iWon ? 'You Won' : tie ? 'It’s A Tie' : P[R.winner].name+' Wins');
+    const p = esc(c.emoji+' '+c.name) + (c.stakes && !team && !tie ? '<br>Stakes: '+esc(c.stakes) : '');
+    if(iWon || (team && R.teamWon)) confetti(P[S.me].c);
+    openSheet(`<div class="celebrate"><div class="e">${e}</div><h4>${h}</h4><p>${p}</p>
+      <button class="btn pri full" onclick="closeSheet();go('ch')">See Results</button>
+      <button class="btn ghost full" style="margin-top:6px" onclick="rematch('${c.id}')">Rematch</button></div>`);
+    return;
+  }
 }
 
 /* ============================== render: stats ============================== */
+function periodRange(p){
+  const t = today();
+  if(p === 'week') return [weekStart(t), t];
+  if(p === 'month') return [t.slice(0,7)+'-01', t];
+  if(p === 'year') return [t.slice(0,4)+'-01-01', t];
+  return [clubStart() < '2000-01-01' ? '2000-01-01' : '2000-01-01', t];
+}
 function h2hRow(label, ov, av, fmt, lowerWins){
-  // score: bigger is better (pace is inverted so the faster runner gets the longer bar)
   const sc = v => { v = +v||0; return lowerWins ? (v ? 1/v : 0) : v; };
-  const oS = sc(ov), aS = sc(av), tot = oS + aS;
-  const oW = tot ? oS/tot*100 : 50;
+  const oS = sc(ov), aS = sc(av), tot = oS + aS, oW = tot ? oS/tot*100 : 50;
   const win = oS===aS ? null : (oS>aS ? 'o' : 'a');
   return `<div class="h2h-row">
     <div class="lbl"><b class="${win==='o'?'win':''}" style="color:var(--o)">${fmt(ov)}</b><em>${label}</em><b class="${win==='a'?'win':''}" style="color:var(--a)">${fmt(av)}</b></div>
     <div class="vs"><i class="o" style="width:${oW}%"></i><i class="a" style="width:${100-oW}%"></i></div>
   </div>`;
 }
-function chartSVG(){
-  const W = 340, H = 170, pl = 28, pr = 10, pt = 12, pb = 22;
-  const series = ['oliver','alexis'].map(w=>{
-    let c = 0; return Array.from({length:DAYS},(_,i)=>{ const d = dateFor(i+1); c += logsOf(w).filter(l=>l.date===d).reduce((s,l)=>s+ +l.dist,0); return {d, v:c}; });
+function weeklyChart(){
+  const W = 340, H = 170, pl = 26, pr = 6, pt = 10, pb = 22, N = 12;
+  const ws0 = weekStart(today()), weeks = Array.from({length:N}, (_,i)=>shift(ws0, -7*(N-1-i)));
+  const vals = weeks.map(ws => WHO.map(w=>sumMi(logsIn(w, ws, shift(ws,6)))));
+  const max = Math.max(5, ...vals.flat()) * 1.1;
+  const cw = (W-pl-pr)/N, bw = Math.max(3, cw/2 - 3), y = v => pt + (H-pt-pb)*(1-v/max);
+  let g = '';
+  [0,.5,1].forEach(f=>{ const v = max/1.1*f; g += `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${pl-5}" y="${y(v)+3.5}" fill="#6b7083" font-size="9" text-anchor="end" font-weight="600">${Math.round(v)}</text>`; });
+  vals.forEach((v,i)=>{
+    const x = pl + i*cw + 2;
+    g += `<rect x="${x}" y="${y(v[0])}" width="${bw}" height="${Math.max(0,y(0)-y(v[0]))}" rx="2.5" fill="#c8ff3d"/><rect x="${x+bw+2}" y="${y(v[1])}" width="${bw}" height="${Math.max(0,y(0)-y(v[1]))}" rx="2.5" fill="#ff4f9a"/>`;
+    if(i % 3 === 0 || i === N-1) g += `<text x="${x+bw}" y="${H-6}" fill="#6b7083" font-size="9" text-anchor="middle" font-weight="600">${i===N-1?'Now':fmtDate(weeks[i])}</text>`;
   });
-  const max = Math.max(5, ...series.flat().map(p=>p.v)) * 1.1;
-  const x = i => pl + i*(W-pl-pr)/(DAYS-1), y = v => pt + (H-pt-pb)*(1-v/max);
-  const t = today(), lastIdx = Math.min(DAYS-1, Math.max(0, curDay()-1));
-  const paths = series.map((s,k)=>{
-    const pts = s.slice(0, (t < startDate()) ? 0 : lastIdx+1);
-    if(!pts.length) return '';
-    const col = k? 'var(--a)':'var(--o)', id = k?'ga':'go';
-    const line = pts.map((p,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1)).join(' ');
-    const area = line + ` L${x(pts.length-1).toFixed(1)} ${y(0)} L${x(0)} ${y(0)} Z`;
-    const last = pts[pts.length-1];
-    return `<path d="${area}" fill="url(#${id})"/><path d="${line}" fill="none" stroke="${col}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${x(pts.length-1)}" cy="${y(last.v)}" r="4.5" fill="${col}" stroke="#161922" stroke-width="2"/>`;
-  }).join('');
-  let grid = '';
-  [0, .5, 1].forEach(f=>{ const v = max/1.1*f; grid += `<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${pl-6}" y="${y(v)+3.5}" fill="#6b7083" font-size="9" text-anchor="end" font-weight="600">${Math.round(v)}</text>`; });
-  [...new Set([1, Math.round(DAYS/3), Math.round(DAYS*2/3), DAYS])].filter(d=>d>=1).forEach(d=>{ grid += `<text x="${x(d-1)}" y="${H-6}" fill="#6b7083" font-size="9" text-anchor="middle" font-weight="600">D${d}</text>`; });
-  return `<svg viewBox="0 0 ${W} ${H}"><defs>
-    <linearGradient id="go" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8ff3d" stop-opacity=".28"/><stop offset="1" stop-color="#c8ff3d" stop-opacity="0"/></linearGradient>
-    <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4f9a" stop-opacity=".28"/><stop offset="1" stop-color="#ff4f9a" stop-opacity="0"/></linearGradient>
-  </defs>${grid}${paths}</svg>`;
+  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;
+}
+function monthCal(){
+  const [y,m] = S.calMonth.split('-').map(Number), first = new Date(y, m-1, 1), lead = (first.getDay()+6)%7, n = new Date(y, m, 0).getDate(), t = today();
+  let cells = ['M','T','W','T','F','S','S'].map(d=>`<div class="dn">${d}</div>`).join('');
+  for(let i=0;i<lead;i++) cells += '<div class="cell out"></div>';
+  for(let i=1;i<=n;i++){
+    const d = iso(new Date(y, m-1, i)), o = ranOn('oliver',d), a = ranOn('alexis',d), fut = d > t;
+    const ob = !o && !fut && breakOn('oliver',d), ab = !a && !fut && breakOn('alexis',d);
+    cells += `<button class="cell ${o?'ho':''} ${d===t?'today':''} ${fut?'future':''}" onclick="openDay('${d}')">
+      <div class="halves"><i class="o ${o?'on':''} ${ob?'brk':''}"></i><i class="a ${a?'on':''} ${ab?'brk':''}"></i></div>
+      <span class="d">${i}</span>${o&&a?'<span class="star">⭐</span>':''}</button>`;
+  }
+  const label = first.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  return `<div class="mcal-h"><button onclick="moveMonth(-1)">‹</button><b>${label}</b><button onclick="moveMonth(1)">›</button></div><div class="mcal">${cells}</div>
+    <div class="legend"><span><i style="background:var(--o)"></i>Oliver</span><span><i style="background:var(--a)"></i>Alexis</span><span><i class="brk"></i>Break</span><span>⭐ Both</span></div>`;
+}
+function moveMonth(n){ const [y,m] = S.calMonth.split('-').map(Number); const d = new Date(y, m-1+n, 1); S.calMonth = iso(d).slice(0,7); const el = $('#calBox'); if(el) el.innerHTML = monthCal(); }
+function goalBlock(who){
+  const g = yearGoal(who), t = today(), y = t.slice(0,4), done = sumMi(logsIn(who, y+'-01-01', t)), p = P[who];
+  if(!g) return `<div class="goal"><div class="gr">${ring(0,p.c,12)}<b>–</b></div><div class="gt"><b style="color:${p.c}">${p.name}</b>${mi1(done)} mi in ${y}. ${who===S.me?'<a href="#" onclick="openSettings();return false" style="color:var(--me);font-weight:700">Set a yearly goal</a>':'No yearly goal set.'}</div></div>`;
+  // pace is measured from Jan 1 or the club's start, whichever is later, so a goal set mid-year isn't instantly "behind"
+  const from = clubStart() > y+'-01-01' ? clubStart() : y+'-01-01';
+  const expect = g * (diffDays(from, t) + 1) / (diffDays(from, y+'-12-31') + 1), diff = done - expect;
+  return `<div class="goal"><div class="gr">${ring(done/g,p.c,12)}<b>${Math.round(done/g*100)}%</b></div><div class="gt"><b style="color:${p.c}">${p.name} · ${mi1(done)} / ${g} mi</b>${diff >= 0 ? '✅ '+mi1(diff)+' mi ahead of pace' : '⏳ '+mi1(-diff)+' mi behind pace'} · ${mi1(Math.max(0,g-done))} to go</div></div>`;
+}
+function shoeBlock(){
+  const rows = [];
+  WHO.forEach(w=>(S.people[w].shoes||[]).forEach(s=>{
+    const m = sumMi(logsOf(w).filter(l=>l.shoe===s.id)), lim = +s.limit || 400, pct = m/lim;
+    rows.push(`<div class="shoe"><div class="sn">${esc(s.name)}${s.retired?' <span class="tag">Retired</span>':''}<small><span style="color:${P[w].c}">${P[w].name}</span> · ${mi1(m)} / ${lim} mi${pct>=1?' · time for new shoes 👀':pct>=.85?' · getting worn':''}</small>
+      <div class="sb"><i style="width:${Math.min(100,pct*100)}%;background:${pct>=1?'var(--red)':pct>=.85?'var(--gold)':P[w].c}"></i></div></div></div>`);
+  }));
+  return rows.length ? `<div class="box">${rows.join('')}</div>` : `<div class="empty" style="background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px"><b>👟</b>Add your shoes in Settings to track their miles.</div>`;
+}
+function prCol(who){
+  const r = recNow()[who], p = P[who];
+  const it = (lbl, v, s) => `<div class="pr"><small>${lbl}</small><b>${v}</b>${s?`<span>${s}</span>`:''}</div>`;
+  return `<div class="prcol"><h4><i style="background:${p.c}"></i>${p.name}</h4>
+    ${it('Longest Run', r.long ? mi(r.long.v)+' mi' : '–', r.long ? fmtDate(r.long.date) : '')}
+    ${it('Fastest Pace (1+ mi)', r.pace ? fmtPace(r.pace.v) : '–', r.pace ? '/mi' : '')}
+    ${it('Best 5K+ Pace', r.fivek ? fmtPace(r.fivek.v) : '–', r.fivek ? '/mi' : '')}
+    ${it('Biggest Week', r.week ? mi1(r.week.v)+' mi' : '–', r.week ? fmtDate(r.week.key) : '')}
+    ${it('Biggest Month', r.month ? mi1(r.month.v)+' mi' : '–', r.month ? parse(r.month.key+'-01').toLocaleDateString('en-US',{month:'short'}) : '')}
+    ${it('Best Streak', bestStreak(who)+' days', '')}
+  </div>`;
 }
 function renderStats(){
-  const o='oliver', a='alexis';
-  const eo = earned(o), ea = earned(a);
-  const runsO = logsOf(o).filter(l=>inChallenge(l.date)).length, runsA = logsOf(a).filter(l=>inChallenge(l.date)).length;
+  const o='oliver', a='alexis', [from, to] = periodRange(S.period);
+  const lo = logsIn(o, from, to), la = logsIn(a, from, to);
+  const eo = earned(o), ea = earned(a), ww = weekWins(), cw = chWins();
   const hasGeo = Object.values(S.logs).some(l=>l.lat!=null);
   $('#v-stats').innerHTML = `
-    <div class="sec-h" style="margin-top:4px"><h2>Head To Head</h2></div>
+    <div class="chips">${[['week','This Week'],['month','This Month'],['year','This Year'],['all','All Time']].map(([k,t])=>`<button class="chip ${S.period===k?'on':''}" onclick="S.period='${k}';renderStats()">${t}</button>`).join('')}</div>
+    <div class="sec-h"><h2>Head To Head</h2></div>
     <div class="h2h">
-      ${h2hRow('Days Run', daysRun(o), daysRun(a), v=>v)}
-      ${h2hRow('Total Miles', totalMi(o), totalMi(a), v=>mi(v))}
-      ${h2hRow('Time On Feet', totalSec(o), totalSec(a), v=>v?fmtHrs(v):'0m')}
-      ${h2hRow('Avg Pace /mi', avgPace(o), avgPace(a), v=>fmtPace(v), true)}
-      ${h2hRow('Longest Run', longest(o), longest(a), v=>mi(v)+' mi')}
-      ${h2hRow('Best Streak', bestStreak(o), bestStreak(a), v=>v+'d')}
-      ${h2hRow('Runs Logged', runsO, runsA, v=>v)}
+      ${h2hRow('Miles', sumMi(lo), sumMi(la), v=>mi1(v))}
+      ${h2hRow('Runs', lo.length, la.length, v=>v)}
+      ${h2hRow('Days Run', new Set(lo.map(l=>l.date)).size, new Set(la.map(l=>l.date)).size, v=>v)}
+      ${h2hRow('Time On Feet', sumSec(lo), sumSec(la), v=>v?fmtHrs(v):'0m')}
+      ${h2hRow('Avg Pace /mi', paceOf(lo), paceOf(la), v=>fmtPace(v), true)}
+      ${h2hRow('Longest Run', lo.reduce((m,l)=>Math.max(m,+l.dist||0),0), la.reduce((m,l)=>Math.max(m,+l.dist||0),0), v=>mi(v)+' mi')}
+      ${h2hRow('Current Streak', curStreak(o), curStreak(a), v=>v+'d')}
+      ${h2hRow('Weekly Goal Streak', weekStreak(o), weekStreak(a), v=>v+'w')}
+      ${h2hRow('Week Wins', ww.oliver, ww.alexis, v=>v)}
+      ${h2hRow('Challenge Wins', cw.oliver, cw.alexis, v=>v)}
       ${h2hRow('Badges', eo.size, ea.size, v=>v)}
     </div>
-    <div class="sec-h"><h2>Mileage Race</h2><span style="font-size:12px;color:var(--tx3);font-weight:600">Cumulative Miles</span></div>
-    <div class="chartbox">${chartSVG()}</div>
+    <div class="sec-h"><h2>Weekly Miles</h2><span>Last 12 Weeks</span></div>
+    <div class="chartbox">${weeklyChart()}</div>
+    <div class="sec-h"><h2>Calendar</h2></div>
+    <div class="box" id="calBox">${monthCal()}</div>
+    <div class="sec-h"><h2>Personal Records</h2></div>
+    <div class="prs">${prCol(o)}${prCol(a)}</div>
+    <div class="sec-h"><h2>Yearly Goals</h2></div>
+    <div class="box">${goalBlock(o)}${goalBlock(a)}</div>
+    <div class="sec-h"><h2>Shoes</h2></div>
+    ${shoeBlock()}
     <div class="sec-h"><h2>Run Map</h2></div>
     ${hasGeo ? `<div id="map"></div>` : `<div class="empty" style="background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px"><b>🗺️</b>Tap the 📍 button when logging a run and your spots show up here.</div>`}
-    <div class="sec-h"><h2>Badges</h2></div>
+    <div class="sec-h"><h2>Badges</h2><span>${eo.size + ea.size} / ${BADGES.length*2}</span></div>
     <div class="badges">${BADGES.map(b=>{
       const go = eo.has(b.id), ga = ea.has(b.id);
-      return `<div class="badge ${go||ga?'earned':''}"><div class="e">${b.e}</div><b>${bt(b.n)}</b><small>${bt(b.d)}</small><div class="got">${go?'<i class="o">O</i>':''}${ga?'<i class="a">A</i>':''}</div></div>`;
+      return `<div class="badge ${go||ga?'earned':''}"><div class="e">${b.e}</div><b>${b.n}</b><small>${b.d}</small><div class="got">${go?'<i class="o">O</i>':''}${ga?'<i class="a">A</i>':''}</div></div>`;
     }).join('')}</div>`;
   if(hasGeo) drawMap();
 }
@@ -682,20 +1313,79 @@ async function drawMap(){
   mapObj = L.map(el, {zoomControl:false, attributionControl:true});
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap'}).addTo(mapObj);
   const pts = [];
-  Object.values(S.logs).filter(l=>l.lat!=null).forEach(l=>{
+  Object.values(S.logs).filter(l=>l.lat!=null && P[l.who]).forEach(l=>{
     const p = P[l.who];
     const icon = L.divIcon({className:'', html:`<div class="pin" style="background:${p.c}"></div>`, iconSize:[16,16], iconAnchor:[8,8]});
-    L.marker([l.lat,l.lng],{icon}).addTo(mapObj).bindPopup(`<b style="color:${p.c}">${p.name}</b> · Day ${dayNum(l.date)}<br>${mi(l.dist)} mi${l.loc?' · '+esc(l.loc):''}`);
+    L.marker([l.lat,l.lng],{icon}).addTo(mapObj).bindPopup(`<b style="color:${p.c}">${p.name}</b> · ${fmtDate(l.date)}<br>${mi(l.dist)} mi${l.loc?' · '+esc(l.loc):''}`);
     pts.push([l.lat,l.lng]);
   });
   if(pts.length===1) mapObj.setView(pts[0], 13); else mapObj.fitBounds(pts, {padding:[30,30], maxZoom:14});
 }
 
+/* ============================== day sheet ============================== */
+let sheetCtx = null;
+function openDay(d){
+  const ls = Object.values(S.logs).filter(l=>l.date===d).sort(sortLogs), fut = d > today();
+  const brs = WHO.map(w=>[w, breakOn(w,d)]).filter(x=>x[1]);
+  openSheet(`<h3>${fmtDate(d,{weekday:'short',month:'short',day:'numeric'})} <button onclick="closeSheet()">Close</button></h3>
+    ${brs.map(([w,b])=>{ const L = breakLabel(b); return `<div class="brkpost" style="margin-top:0;margin-bottom:10px"><div class="e">${L.e}</div><div class="t"><b style="color:${P[w].c}">${P[w].name}</b> on break · ${L.n}${b.note?' · '+esc(b.note):''}</div></div>`; }).join('')}
+    ${ls.length ? ls.map(postHTML).join('') : `<div class="empty" style="padding:30px"><b>${fut?'⏳':'🫥'}</b>${fut?'This day hasn’t happened yet.':'No runs logged.'}</div>`}
+    ${!fut && S.me ? `<button class="btn pri full" style="margin-top:16px" onclick="openLog(null,'${d}')">Log ${P[S.me].name}'s Run For This Day</button>
+      ${!ranOn(S.me,d) && !breakOn(S.me,d) ? `<button class="btn full" style="margin-top:8px" onclick="quickRest('${d}')">😴 Mark As Rest Day</button>` : ''}` : ''}`);
+  sheetCtx = {kind:'day', d};
+  hydratePhotos();
+}
+
+/* ============================== breaks UI ============================== */
+let BD = null;
+function openBreak(){
+  if(!S.me) return pickWho();
+  BD = {kind:'rest', from:today(), to:today(), open:false, note:''};
+  renderBreak();
+}
+function renderBreak(){
+  const myBreaks = breaksOf(S.me).slice().sort((a,b)=>b.from.localeCompare(a.from));
+  openSheet(`<h3>Take A Break <button onclick="closeSheet()">Cancel</button></h3>
+    <p class="small-note" style="margin-top:-8px;margin-bottom:14px">Break days freeze your streak — they don’t add to it and they don’t break it. ${P[OTHER[S.me]].name} will see you’re on a break.</p>
+    <div class="fld"><label>Why</label><div class="opts">${Object.entries(BREAKS).map(([k,b])=>`<button class="opt ice ${BD.kind===k?'on':''}" onclick="BD.kind='${k}';if('${k}'==='rest'){BD.open=false;BD.to=BD.from;}renderBreak()">${b.e} ${b.n}</button>`).join('')}</div></div>
+    <div class="fld row2">
+      <div><span class="lab">From</span><input class="in" type="date" id="bFrom" value="${BD.from}"></div>
+      <div><span class="lab">Until</span><input class="in" type="date" id="bTo" value="${BD.open?'':BD.to}" min="${BD.from}" ${BD.open?'disabled':''}></div>
+    </div>
+    <div class="toggle" onclick="BD.open=!BD.open;renderBreak()" style="margin-top:-6px;margin-bottom:16px"><span>Until I’m Back<small>No end date — tap “I’m Back” when you’re running again</small></span><div class="sw ${BD.open?'on':''}"></div></div>
+    <div class="fld"><label>Note <span style="text-transform:none;letter-spacing:0;font-weight:600">· optional</span></label><input class="in" id="bNote" maxlength="100" placeholder="Rolled my ankle on the trail" value="${esc(BD.note)}"></div>
+    <button class="btn ice full" onclick="saveBreak()">${(BREAKS[BD.kind]||BREAKS.other).e} Start Break</button>
+    ${myBreaks.length ? `<div class="sec-h"><h2>Your Breaks</h2></div><div class="box">${myBreaks.map(b=>{ const L = breakLabel(b); return `<div class="list-item"><span style="font-size:22px">${L.e}</span><div class="grow">${L.n}<small>${L.span}${b.note?' · '+esc(b.note):''}</small></div>${breakOn(S.me,today())===b?`<button class="btn ice sm" onclick="endBreak('${b.id}')">I’m Back</button>`:''}<button class="btn ghost sm danger" onclick="removeBreak('${b.id}')">✕</button></div>`; }).join('')}</div>` : ''}`);
+  $('#bFrom').onchange = e=>{ BD.from = e.target.value || today(); if(BD.to < BD.from || BD.kind==='rest') BD.to = BD.from; renderBreak(); };
+  $('#bTo').onchange = e=>{ BD.to = e.target.value; };
+  $('#bNote').oninput = e=>{ BD.note = e.target.value; };
+}
+function saveBreak(){
+  if(!BD.open && (!BD.to || BD.to < BD.from)) return toast('Pick an end date after the start');
+  const b = {id:uid(), kind:BD.kind, from:BD.from, to:BD.open?'':BD.to, note:BD.note.trim(), at:Date.now()};
+  const me = S.people[S.me];
+  me.breaks = [...(me.breaks||[]), b];
+  pushPerson(); closeSheet(); render();
+  toast(`${BREAKS[b.kind].e} Break on · streak frozen`);
+}
+function quickRest(d){
+  const me = S.people[S.me];
+  me.breaks = [...(me.breaks||[]), {id:uid(), kind:'rest', from:d, to:d, note:'', at:Date.now()}];
+  pushPerson(); closeSheet(); render(); toast('😴 Rest day saved · streak safe');
+}
+function endBreak(id){
+  const b = breaksOf(S.me).find(x=>x.id===id); if(!b) return;
+  const y = shift(today(), -1);
+  if(b.from > y) S.people[S.me].breaks = breaksOf(S.me).filter(x=>x.id!==id);   // started today: just remove it
+  else b.to = y;
+  pushPerson(); closeSheet(); render(); toast('💪 Welcome back. Go get a run in.');
+}
+function removeBreak(id){ if(!confirm('Remove this break? Those days go back to normal.')) return; S.people[S.me].breaks = breaksOf(S.me).filter(x=>x.id!==id); pushPerson(); render(); renderBreak(); }
+
 /* ============================== photos ============================== */
 function hydratePhotos(){
   document.querySelectorAll('[data-photo]').forEach(async el=>{
-    const id = el.dataset.photo;
-    const list = await getPhoto(id);
+    const id = el.dataset.photo, list = await getPhoto(id);
     if(!el.isConnected) return;
     if(!list.length){ el.textContent = 'Photos Syncing…'; return; }
     const g = document.createElement('div'); g.className = 'gal';
@@ -705,16 +1395,12 @@ function hydratePhotos(){
     el.replaceWith(g);
   });
 }
-// photos live in run_photos/{runId} as {list:[dataURL,…]} so the run feed stays light
 async function getPhoto(id){
   if(S.photos[id]) return S.photos[id];
   const local = LS.get('rc_ph_'+id, null);
   if(local) return S.photos[id] = local;
   if(!syncOn) return [];
-  try{
-    const snap = await FS.getDoc(FS.doc(db,'run_photos',id));
-    if(snap.exists()){ const d = snap.data(); return S.photos[id] = d.list || (d.data ? [d.data] : []); }
-  }catch(e){}
+  try{ const snap = await FS.getDoc(FS.doc(db,'run_photos',id)); if(snap.exists()){ const d = snap.data(); return S.photos[id] = d.list || (d.data ? [d.data] : []); } }catch(e){}
   return [];
 }
 function viewPhoto(id, i){
@@ -726,7 +1412,6 @@ function compress(file){
   return new Promise((res,rej)=>{
     const img = new Image(), url = URL.createObjectURL(file);
     img.onload = ()=>{
-      // keep each photo under ~180KB so all MAX_PHOTOS fit in one synced record
       let max = 1000, q = .72, out = '';
       for(let tries=0; tries<8; tries++){
         let {width:w, height:h} = img;
@@ -744,17 +1429,18 @@ function compress(file){
 }
 
 /* ============================== sheet ============================== */
-function openSheet(html){ $('#sheetBody').innerHTML = html; $('#sheet').scrollTop = 0; $('#scrim').classList.add('on'); $('#sheet').classList.add('on'); }
-function closeSheet(){ $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on'); draft = null; }
+function openSheet(html){ sheetCtx = null; $('#sheetBody').innerHTML = html; $('#sheet').scrollTop = 0; $('#scrim').classList.add('on'); $('#sheet').classList.add('on'); }
+function closeSheet(){ $('#scrim').classList.remove('on'); $('#sheet').classList.remove('on'); draft = null; CD = null; BD = null; sheetCtx = null; setTimeout(checkChEvents, 500); }
 $('#scrim').onclick = ()=>{ if(S.me) closeSheet(); };
 
 /* ============================== log run ============================== */
 let draft = null;
 function openLog(id, date){
   if(!S.me) return pickWho();
-  const ex = id ? S.logs[id] : null;
-  const now = new Date();
-  draft = ex ? {...ex, photos: []} : {id: uid(), who:S.me, date: date || today(), time: pad(now.getHours())+':'+pad(now.getMinutes()), dist:'', secs:0, type:'', feel:0, loc:'', lat:null, lng:null, notes:'', hasPhoto:false, photos:[]};
+  const ex = id ? S.logs[id] : null, now = new Date();
+  const myShoes = (S.people[S.me].shoes||[]).filter(s=>!s.retired || (ex && ex.shoe===s.id));
+  draft = ex ? {...ex, photos: []} : {id: uid(), who:S.me, date: date || today(), time: pad(now.getHours())+':'+pad(now.getMinutes()), dist:'', secs:0, type:'', feel:0, loc:'', lat:null, lng:null, notes:'', hasPhoto:false, photos:[], together:false, shoe: LS.get('rc_lastShoe','')};
+  if(draft.shoe && !myShoes.some(s=>s.id===draft.shoe)) draft.shoe = '';
   const h = Math.floor((draft.secs||0)/3600), m = Math.floor((draft.secs||0)%3600/60), s = (draft.secs||0)%60;
   openSheet(`
     <h3>${ex?'Edit Run':'Log A Run'} <button onclick="closeSheet()">Cancel</button></h3>
@@ -770,20 +1456,20 @@ function openLog(id, date){
       <div class="pace-live" id="paceLive"></div>
     </div>
     <div class="fld row2">
-      <div><label style="display:block;font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px">Date</label><input class="in" id="fDate" type="date" value="${draft.date}" max="${today()}"></div>
-      <div><label style="display:block;font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px">Start Time</label><input class="in" id="fTime" type="time" value="${draft.time||''}"></div>
+      <div><span class="lab">Date</span><input class="in" id="fDate" type="date" value="${draft.date}" max="${today()}"></div>
+      <div><span class="lab">Start Time</span><input class="in" id="fTime" type="time" value="${draft.time||''}"></div>
     </div>
     <div class="fld"><label>Run Type</label><div class="opts" id="fType">${TYPES.map(t=>`<button type="button" class="opt ${draft.type===t?'on':''}" data-v="${t}">${t}</button>`).join('')}</div></div>
     <div class="fld"><label>How Did It Feel?</label><div class="feel" id="fFeel">${FEELS.map((f,i)=>`<button type="button" class="${draft.feel===i+1?'on':''}" data-v="${i+1}">${f[0]}<small>${f[1]}</small></button>`).join('')}</div></div>
+    <div class="fld"><div class="toggle" id="fTog"><span>🤝 Ran Together<small>You and ${P[OTHER[S.me]].name} ran this one side by side</small></span><div class="sw ${draft.together?'on':''}"></div></div></div>
+    ${myShoes.length ? `<div class="fld"><label>Shoes</label><div class="opts" id="fShoe"><button type="button" class="opt ${!draft.shoe?'on':''}" data-v="">None</button>${myShoes.map(s=>`<button type="button" class="opt ${draft.shoe===s.id?'on':''}" data-v="${s.id}">👟 ${esc(s.name)}</button>`).join('')}</div></div>` : ''}
     <div class="fld"><label>Location</label>
-      <div class="loc-row"><input class="in" id="fLoc" placeholder="Lakefront Trail, Chicago" value="${esc(draft.loc)}">
+      <div class="loc-row"><input class="in" id="fLoc" placeholder="Ala Moana Beach Park, Honolulu" value="${esc(draft.loc)}">
         <button type="button" id="geoBtn" aria-label="Use current location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></button>
       </div>
       <div class="hint" id="geoHint">${draft.lat!=null?'📍 Pinned on the run map':'Tap the pin to fill this in and drop it on the run map.'}</div>
     </div>
-    <div class="fld"><label>Photos <span style="text-transform:none;letter-spacing:0;font-weight:600">· up to ${MAX_PHOTOS}</span></label>
-      <div id="drop"></div>
-    </div>
+    <div class="fld"><label>Photos <span style="text-transform:none;letter-spacing:0;font-weight:600">· up to ${MAX_PHOTOS}</span></label><div id="drop"></div></div>
     <div class="fld"><label>Notes</label><textarea class="in" id="fNotes" placeholder="How it went, what you saw, what hurt…" maxlength="1500">${esc(draft.notes)}</textarea></div>
     <button class="btn pri full" id="saveRun">${ex?'Save Changes':'Post Run'}</button>
     ${ex?`<button class="btn ghost full danger" style="margin-top:8px" onclick="deleteRun('${ex.id}')">Delete Run</button>`:''}
@@ -795,6 +1481,8 @@ function openLog(id, date){
   ['#fDist','#fH','#fM','#fS'].forEach(s=>$(s).addEventListener('input',upd)); upd();
   $('#fType').onclick = e=>{ const b = e.target.closest('.opt'); if(!b) return; draft.type = draft.type===b.dataset.v ? '' : b.dataset.v; $('#fType').querySelectorAll('.opt').forEach(x=>x.classList.toggle('on', x.dataset.v===draft.type)); };
   $('#fFeel').onclick = e=>{ const b = e.target.closest('button'); if(!b) return; draft.feel = +b.dataset.v; $('#fFeel').querySelectorAll('button').forEach(x=>x.classList.toggle('on', +x.dataset.v===draft.feel)); };
+  $('#fTog').onclick = ()=>{ draft.together = !draft.together; $('#fTog .sw').classList.toggle('on', draft.together); };
+  if($('#fShoe')) $('#fShoe').onclick = e=>{ const b = e.target.closest('.opt'); if(!b) return; draft.shoe = b.dataset.v; $('#fShoe').querySelectorAll('.opt').forEach(x=>x.classList.toggle('on', x.dataset.v===draft.shoe)); };
   $('#geoBtn').onclick = useLocation;
   showDrop();
   if(ex && ex.hasPhoto) getPhoto(ex.id).then(list=>{ if(list.length && draft && draft.id===ex.id && !draft.photosChanged){ draft.photos = [...list]; showDrop(); } });
@@ -828,12 +1516,11 @@ function useLocation(){
     try{
       const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&lat=${draft.lat}&lon=${draft.lng}`, {headers:{'Accept-Language':'en'}});
       const j = await r.json(), a = j.address || {};
-      const spot = j.name || a.park || a.leisure || a.road || a.neighbourhood || a.suburb;
-      const town = a.city || a.town || a.village || a.county;
+      const spot = j.name || a.park || a.leisure || a.road || a.neighbourhood || a.suburb, town = a.city || a.town || a.village || a.county;
       const name = [spot, town].filter(Boolean).join(', ');
       if(name && $('#fLoc') && !$('#fLoc').value.trim()) $('#fLoc').value = name;
     }catch(e){}
-  }, err=>{ hint.textContent = 'Couldn’t get your location — type it in instead.'; }, {enableHighAccuracy:true, timeout:12000});
+  }, ()=>{ hint.textContent = 'Couldn’t get your location — type it in instead.'; }, {enableHighAccuracy:true, timeout:12000});
 }
 function saveRun(){
   const dist = parseFloat($('#fDist').value);
@@ -841,31 +1528,31 @@ function saveRun(){
   const secs = (+$('#fH').value||0)*3600 + (+$('#fM').value||0)*60 + (+$('#fS').value||0);
   const date = $('#fDate').value || today();
   if(date > today()) return toast('That date is in the future');
-  const isNew = !S.logs[draft.id];
-  const before = earned(S.me);
-  const prev = S.logs[draft.id] || {};
+  const isNew = !S.logs[draft.id], before = earned(S.me), prev = S.logs[draft.id] || {};
   const log = {
     id: draft.id, who: draft.who, date, time: $('#fTime').value || '',
     dist: Math.round(dist*100)/100, secs, type: draft.type||'', feel: draft.feel||0,
     loc: $('#fLoc').value.trim(), lat: draft.lat ?? null, lng: draft.lng ?? null,
-    notes: $('#fNotes').value.trim(),
+    notes: $('#fNotes').value.trim(), together: !!draft.together, shoe: draft.shoe || '',
     hasPhoto: draft.photosChanged ? draft.photos.length > 0 : !!draft.hasPhoto,
     cheers: prev.cheers || {}, comments: prev.comments || [],
     createdAt: prev.createdAt || Date.now(), updatedAt: Date.now()
   };
-  S.logs[log.id] = log; saveLocal();
+  if(draft.shoe !== undefined) LS.set('rc_lastShoe', draft.shoe || '');
+  S.logs[log.id] = log; saveLocal(); REC = null;
   if(draft.photosChanged){
     if(draft.photos.length){ S.photos[log.id] = [...draft.photos]; holdPhoto(log.id, S.photos[log.id]); pushPhoto(log.id, S.photos[log.id]); }
     else { delete S.photos[log.id]; try{localStorage.removeItem('rc_ph_'+log.id);}catch(e){} delPhoto(log.id); }
   }
   pushLog(log);
+  const ended = activeBreak(S.me);
+  if(isNew && date === today() && ended && !ended.to && ended.from < today()){ ended.to = shift(today(),-1); pushPerson(); }   // running again ends an open-ended break
   closeSheet(); render();
-  if(isNew) celebrate(log, before);
-  else toast('✓ Run Updated');
+  if(isNew) celebrate(log, before); else toast('✓ Run Updated');
 }
 function deleteRun(id){
   if(!confirm('Delete this run? This can’t be undone.')) return;
-  delete S.logs[id]; delete S.photos[id]; saveLocal();
+  delete S.logs[id]; delete S.photos[id]; saveLocal(); REC = null;
   try{localStorage.removeItem('rc_ph_'+id);}catch(e){}
   if(syncOn){ FS.deleteDoc(FS.doc(db,'run_logs',id)).catch(()=>{}); delPhoto(id); }
   closeSheet(); render(); toast('Run Deleted');
@@ -873,13 +1560,17 @@ function deleteRun(id){
 function celebrate(log, before){
   confetti(P[log.who].c);
   const after = earned(log.who), fresh = BADGES.filter(b => after.has(b.id) && !before.has(b.id));
-  const n = dayNum(log.date), st = curStreak(log.who), them = OTHER[log.who];
-  let line = inChallenge(log.date) ? `Day ${n} is in the books. ${st>1?st+'-day streak and counting.':''}` : 'Logged and saved.';
-  if(log.date===today()) line += ranOn(them, today()) ? ` ${P[them].name} already ran too — you’re both done for today.` : ` ${P[them].name} hasn’t run yet — they’ll see this.`;
+  const prs = newPRs(log.who, log.id), st = curStreak(log.who), them = OTHER[log.who];
+  const ws = weekStart(log.date), wr = weekRuns(log.who, ws), goal = weekGoal(log.who);
+  let line = st > 1 ? `${st}-day streak 🔥 ` : '';
+  if(ws === weekStart(today())) line += wr === goal ? 'Weekly goal hit! ' : wr < goal ? `${wr}/${goal} runs this week. ` : '';
+  if(log.date===today()) line += ranOn(them, today()) ? `${P[them].name} already ran too — you’re both done for today.` : activeBreak(them) ? `${P[them].name} is on a break today.` : `${P[them].name} hasn’t run yet — they’ll see this.`;
+  const head = fresh.length ? 'Badge Unlocked: '+fresh[0].n : prs.length ? 'New Record' : mi(log.dist)+' Miles Done';
   setTimeout(()=>openSheet(`<div class="celebrate">
-    <div class="e">${fresh.length ? fresh[0].e : '🔥'}</div>
-    <h4>${fresh.length ? 'Badge Unlocked: '+fresh[0].n : mi(log.dist)+' Miles Done'}</h4>
-    <p>${fresh.length ? fresh.map(b=>bt(b.d)).join(' · ')+'<br>' : ''}${line}</p>
+    <div class="e">${fresh.length ? fresh[0].e : prs.length ? '🏆' : '🔥'}</div>
+    <h4>${head}</h4>
+    ${prs.length ? `<div class="prl">${prs.map(p=>`<span class="tag pr">${p}</span>`).join('')}</div>` : ''}
+    <p>${fresh.length ? fresh.map(b=>b.d).join(' · ')+'<br>' : ''}${line}</p>
     <button class="btn pri full" onclick="closeSheet()">Let’s Go</button>
   </div>`), 350);
 }
@@ -905,7 +1596,7 @@ function addComment(ev, id){
   saveLocal(); softRender();
   if(syncOn) FS.updateDoc(FS.doc(db,'run_logs',id), {comments: FS.arrayUnion(c)}).catch(()=>{});
 }
-const NUDGES = ['Your shoes are lonely. 👟','The square is still empty. Go fill it. 🟩','I ran. Your turn. 😤','Just one mile. You’ve got this. 💪','Don’t make me run your miles for you. 🏃'];
+const NUDGES = ['Your shoes are lonely. 👟','The square is still empty. Go fill it. 🟩','I ran. Your turn. 😤','Just one mile. You’ve got this. 💪','Don’t make me run your miles for you. 🏃','I’m winning the week. Just saying. 👑'];
 function openNudge(){
   const them = OTHER[S.me];
   openSheet(`<h3>Nudge ${P[them].name} <button onclick="closeSheet()">Cancel</button></h3>
@@ -916,8 +1607,7 @@ function openNudge(){
 function sendNudge(i){
   const msg = i<0 ? ($('#nudgeTxt').value.trim()) : NUDGES[i];
   if(!msg) return;
-  const them = OTHER[S.me];
-  const n = {from:S.me, msg, at:Date.now()};
+  const them = OTHER[S.me], n = {from:S.me, msg, at:Date.now()};
   S.cfg['nudge_'+them] = n; saveLocal();
   if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {['nudge_'+them]: n}, {merge:true}).catch(()=>{});
   closeSheet(); toast('📣 Nudge sent to '+P[them].name);
@@ -942,51 +1632,41 @@ function pickWho(){
 }
 function setMe(w){ S.me = w; LS.set('rc_me', w); applyMe(); closeSheet(); render(); checkNudge(); }
 function openSettings(){
+  const me = S.people[S.me], shoes = me.shoes || [];
   openSheet(`<h3>Settings <button onclick="closeSheet()">Done</button></h3>
-    <div class="fld settings-list"><label>Challenge Start Date</label>
-      <input class="in" type="date" id="sStart" value="${S.cfg.start||''}">
-      <div class="small-note">Day 1 of ${DAYS}. Changing it updates for both of you. ${S.cfg.start?'Runs through '+fmtDate(dateFor(DAYS),{month:'long',day:'numeric',year:'numeric'})+'.':''}</div>
-    </div>
-    <div class="fld"><label>Challenge Length</label>
-      <button class="btn full" onclick="openExtend()">${DAYS} Days · Change Or Extend</button>
-    </div>
     <div class="fld"><label>This Phone Belongs To</label>
-      <div class="opts">${['oliver','alexis'].map(w=>`<button class="opt ${S.me===w?'on':''}" onclick="setMe('${w}');openSettings()">${P[w].name}</button>`).join('')}</div>
+      <div class="opts">${WHO.map(w=>`<button class="opt ${S.me===w?'on':''}" onclick="setMe('${w}');openSettings()">${P[w].name}</button>`).join('')}</div>
+    </div>
+    <div class="fld"><label>My Weekly Goal</label>
+      <div class="opts">${[1,2,3,4,5,6,7].map(n=>`<button class="opt ${weekGoal(S.me)===n?'on':''}" onclick="setGoal('week',${n})">${n}×</button>`).join('')}</div>
+      <div class="small-note">Runs per week. Fills the ring on Home and drives your weekly goal streak.</div>
+    </div>
+    <div class="fld"><label>My ${today().slice(0,4)} Mileage Goal</label>
+      <div class="loc-row"><input class="in" id="sYear" type="number" inputmode="numeric" min="0" placeholder="e.g. 500" value="${yearGoal(S.me)||''}"><button onclick="setGoal('year', +$('#sYear').value)" style="width:auto;padding:0 14px;font-weight:800">Save</button></div>
+    </div>
+    <div class="fld"><label>Break Mode</label>
+      <button class="btn ice full" onclick="openBreak()">${activeBreak(S.me) ? breakLabel(activeBreak(S.me)).e+' On Break · Manage' : '🧊 Take A Break / Rest Day'}</button>
+    </div>
+    <div class="fld"><label>My Shoes</label>
+      ${shoes.length ? `<div class="box" style="padding:4px 14px;margin-bottom:10px">${shoes.map(s=>{ const m = sumMi(logsOf(S.me).filter(l=>l.shoe===s.id)); return `<div class="list-item"><div class="grow">${esc(s.name)}<small>${mi1(m)} / ${s.limit||400} mi${s.retired?' · retired':''}</small></div><button class="btn sm" onclick="retireShoe('${s.id}')">${s.retired?'Unretire':'Retire'}</button></div>`; }).join('')}</div>` : ''}
+      <div class="loc-row"><input class="in" id="sShoe" maxlength="40" placeholder="Nike Pegasus 41"><button onclick="addShoe()" style="width:auto;padding:0 14px;font-weight:800">Add</button></div>
+      <div class="small-note">Tracks miles per pair and warns you around 400 mi.</div>
+    </div>
+    <div class="fld"><label>Club Started</label>
+      <input class="in" type="date" id="sStart" value="${clubStart()}">
+      <div class="small-note">Streaks and weekly duels count from this date. Changes it for both of you.</div>
     </div>
     <div class="fld"><label>Add To Home Screen</label>
-      <div class="small-note">iPhone: open this page in Safari → tap the Share button → <b>Add to Home Screen</b>.<br>Android: Chrome menu ⋮ → <b>Install app</b>.</div>
+      <div class="small-note">iPhone: open this page in Safari → Share → <b>Add to Home Screen</b>.</div>
     </div>
-    <div class="fld"><label>Share With Your Partner</label>
-      <button class="btn full" onclick="shareApp()">Send The Link</button>
-    </div>`);
-  $('#sStart').onchange = e=>{ if(!e.target.value) return; S.cfg.start = e.target.value; pushCfg(); saveLocal(); render(); toast('Start date set: '+fmtDate(S.cfg.start,{month:'long',day:'numeric'})); openSettings(); };
+    <div class="fld"><label>Share With Your Partner</label><button class="btn full" onclick="shareApp()">Send The Link</button></div>`);
+  $('#sStart').onchange = e=>{ if(!e.target.value) return; S.cfg.start = e.target.value; pushCfg(); saveLocal(); render(); toast('Club start set: '+fmtDate(S.cfg.start,{month:'long',day:'numeric'})); };
 }
-/* ---- extend the challenge: pick a new total length; same start date, so every run so far still counts ---- */
-function openExtend(){
-  const minD = Math.max(7, curDay());
-  const opts = [...new Set([DAYS+30, 60, 90, 120, 180, 365])].filter(n=>n>DAYS).sort((a,b)=>a-b);
-  const endOf = n => fmtDate(iso(addDays(parse(startDate()), n-1)),{month:'long',day:'numeric',year:'numeric'});
-  openSheet(`<h3>Keep The Club Going <button onclick="closeSheet()">Close</button></h3>
-    <p class="small-note" style="margin-top:-8px;margin-bottom:14px">Right now it's <b>${DAYS} days</b>. Pick a new total. Same Day 1, so every run, streak and badge so far still counts. It changes for both of you.</p>
-    <div class="opts">${opts.map(n=>`<button class="opt" onclick="setDays(${n})">${n} Days<br><small style="opacity:.7;font-weight:500">to ${endOf(n)}</small></button>`).join('')}</div>
-    <div class="fld" style="margin-top:16px"><label>Custom Number Of Days</label>
-      <input class="in" type="number" inputmode="numeric" id="xDays" min="${minD}" max="1000" placeholder="e.g. 75">
-      <div class="small-note" id="xEnd">Total days from Day 1 (${fmtDate(startDate(),{month:'short',day:'numeric'})}).</div>
-      <button class="btn pri full" style="margin-top:10px" onclick="setDays(+$('#xDays').value)">Set Custom Length</button>
-    </div>`);
-  $('#xDays').oninput = e=>{ const n = +e.target.value; $('#xEnd').textContent = n>=minD ? 'Ends '+endOf(n)+'.' : 'At least '+minD+' days.'; };
-}
-function setDays(n){
-  n = Math.round(+n||0);
-  const minD = Math.max(7, curDay());
-  if(n < minD || n > 1000){ toast('Pick between '+minD+' and 1000 days'); return; }
-  const longer = n > DAYS;
-  S.cfg.days = n; syncDays(); pushCfg(); closeSheet(); render();
-  toast((longer?'🔥 Extended to ':'Set to ')+n+' days · ends '+fmtDate(dateFor(n),{month:'short',day:'numeric'}));
-  if(longer && typeof confetti==='function') try{ confetti(S.me?P[S.me].c:'#c8ff3d'); }catch(e){}
-}
+function setGoal(k, v){ const me = S.people[S.me]; me.goal = {...(me.goal||{}), [k]: Math.max(0, Math.round(+v||0))}; pushPerson(); render(); openSettings(); toast(k==='week' ? '🎯 Weekly goal: '+v+' runs' : (v ? '🎯 Yearly goal: '+Math.round(v)+' mi' : 'Yearly goal cleared')); }
+function addShoe(){ const n = $('#sShoe').value.trim(); if(!n) return; const me = S.people[S.me]; me.shoes = [...(me.shoes||[]), {id:uid(), name:n, limit:400, retired:false, added:today()}]; pushPerson(); openSettings(); toast('👟 Added '+n); }
+function retireShoe(id){ const s = (S.people[S.me].shoes||[]).find(x=>x.id===id); if(!s) return; s.retired = !s.retired; pushPerson(); openSettings(); }
 async function shareApp(){
-  const data = {title:DAYS+' Day Run Club', text:'Our '+DAYS+'-day running challenge — log your runs here 🏃', url: location.href.split('#')[0]};
+  const data = {title:'Run Club', text:'Our running club — log your runs here 🏃', url: location.href.split('#')[0]};
   if(navigator.share){ try{ await navigator.share(data); }catch(e){} }
   else { try{ await navigator.clipboard.writeText(data.url); toast('Link copied'); }catch(e){ prompt('Copy this link', data.url); } }
 }
@@ -995,9 +1675,9 @@ $('#meChip').onclick = ()=> S.me ? openSettings() : pickWho();
 /* ============================== confetti ============================== */
 function confetti(color){
   const cv = $('#fx'), ctx = cv.getContext('2d'), dpr = devicePixelRatio||1;
-  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; ctx.scale(dpr,dpr);
+  cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
   const cols = [color, '#ffffff', '#ffc53d', color, '#7dff9a'];
-  const parts = Array.from({length:140},()=>({x:innerWidth/2, y:innerHeight*.75, vx:(Math.random()-.5)*14, vy:-Math.random()*16-6, r:Math.random()*6+3, c:cols[Math.random()*cols.length|0], a:Math.random()*6, va:(Math.random()-.5)*.4, life:0}));
+  const parts = Array.from({length:140},()=>({x:innerWidth/2, y:innerHeight*.75, vx:(Math.random()-.5)*14, vy:-Math.random()*16-6, r:Math.random()*6+3, c:cols[Math.random()*cols.length|0], a:Math.random()*6, va:(Math.random()-.5)*.4}));
   let f = 0;
   (function tick(){
     ctx.clearRect(0,0,innerWidth,innerHeight);
@@ -1010,6 +1690,7 @@ function confetti(color){
 
 /* ============================== nav ============================== */
 function go(v){
+  if($('#sheet').classList.contains('on')) closeSheet();
   S.view = v;
   document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
   document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on', x.dataset.v===v));
@@ -1018,30 +1699,24 @@ function go(v){
 document.querySelectorAll('.tab').forEach(t=>t.onclick = ()=>go(t.dataset.v));
 $('#fab').onclick = ()=>openLog();
 function paintChrome(){
-  syncDays();
-  const l = $('#logoN'); if(l){ l.textContent = DAYS; l.style.fontSize = DAYS>99 ? '13px' : ''; }
-  const t = $('#tabDays'); if(t) t.textContent = DAYS+' Days';
-  document.title = DAYS+' Day Run Club';
+  const tab = document.querySelector('.tab[data-v="ch"]');
+  const has = pendingInvites().length > 0, b = tab.querySelector('.bdg');
+  if(has && !b) tab.insertAdjacentHTML('beforeend','<span class="bdg"></span>'); else if(!has && b) b.remove();
 }
 function render(){
-  paintChrome();
-  ({home:renderHome, cal:renderCal, feed:renderFeed, stats:renderStats})[S.view]();
+  REC = null; paintChrome();
+  ({home:renderHome, feed:renderFeed, ch:renderCh, stats:renderStats})[S.view]();
 }
-// re-render without losing an in-progress comment or the sheet
 let softT = null;
 function softRender(){
   clearTimeout(softT);
   softT = setTimeout(()=>{
     const a = document.activeElement;
-    if(a && a.closest && a.closest('.cmt-in') && a.value) return; // don't wipe a half-typed comment
-    paintChrome();
-    if(S.view==='stats') return renderStats();
-    render();
-    if($('#sheet').classList.contains('on') && !draft){
-      // refresh a day sheet if one is open
-      const h = $('#sheetBody h3'); const m = h && h.textContent.match(/^Day (-?\d+)/);
-      if(m) openDay(dateFor(+m[1]));
-    }
+    if(a && a.closest && a.closest('.cmt-in') && a.value) return;
+    REC = null; paintChrome();
+    if(S.view === 'stats') renderStats(); else render();
+    if($('#sheet').classList.contains('on') && sheetCtx && sheetCtx.kind === 'day') openDay(sheetCtx.d);
+    checkChEvents();
   }, 60);
 }
 
@@ -1064,22 +1739,44 @@ async function initCloud(){
     ]);
     FS = store;
     const a = app.initializeApp(FB);
-    // Memory-only cache: the app keeps its own copy in localStorage, and Firestore's on-disk
-    // cache is what tends to wedge on iPhone home-screen apps (nothing syncs, no error shown).
+    // memory-only cache: Firestore's on-disk cache tends to wedge on iPhone home-screen apps
     try{ db = store.initializeFirestore(a, {localCache: store.memoryLocalCache(), experimentalAutoDetectLongPolling: true}); }
     catch(e){ db = store.getFirestore(a); }
     syncOn = true; syncState('', 'Connecting');
-    let first = true;
-    // one-time cleanup: the old version left Firestore's disk cache behind, which can be stuck
     try{ indexedDB.deleteDatabase('firestore/[DEFAULT]/tasks-oj/main'); }catch(e){}
+    let firstLogs = true, firstCfg = true;
 
-    store.onSnapshot(store.doc(db,'run_config','main'), snap=>{
-      const d = snap.data();
-      if(!d){ if(S.cfg.start && !snap.metadata.fromCache) pushCfg(); return; }
-      const before = JSON.stringify(S.cfg);
-      if((d.updatedAt||0) >= (S.cfg.updatedAt||0)) S.cfg = {...S.cfg, ...d};
-      else Object.keys(d).filter(k=>k.startsWith('nudge_')).forEach(k=>S.cfg[k]=d[k]);
-      if(JSON.stringify(S.cfg) !== before){ saveLocal(); softRender(); }
+    // run_config holds: main (club start + nudges), p_oliver / p_alexis (breaks, shoes, goals), ch_* (challenges)
+    store.onSnapshot(store.collection(db,'run_config'), snap=>{
+      let touched = false;
+      snap.docChanges().forEach(chg=>{
+        const id = chg.doc.id, d = chg.doc.data();
+        if(id === 'main'){
+          if(chg.type === 'removed') return;
+          const before = JSON.stringify(S.cfg); S.cfg = {...S.cfg, ...d};
+          if(JSON.stringify(S.cfg) !== before) touched = true;
+        } else if(id.startsWith('p_')){
+          const w = id.slice(2); if(!P[w] || chg.type === 'removed') return;
+          const mine = S.people[w] || {};
+          if(w === S.me && (mine.updatedAt||0) > (d.updatedAt||0)) return;   // my newer local copy wins; it gets re-sent
+          if(JSON.stringify(mine) !== JSON.stringify(d)){ S.people[w] = d; touched = true; }
+        } else if(id.startsWith('ch_')){
+          if(chg.type === 'removed'){ if(S.ch[id]){ delete S.ch[id]; touched = true; } return; }
+          const isNew = !S.ch[id];
+          if(JSON.stringify(S.ch[id]) !== JSON.stringify(d)){
+            S.ch[id] = d; touched = true;
+            if(isNew && !firstCfg && S.me && d.createdBy !== S.me) toast(`<span style="font-size:22px">📨</span><span><b>${P[d.createdBy]?.name}</b> challenged you: ${esc(d.emoji+' '+d.name)}</span>`, 6000);
+          }
+        }
+      });
+      if(!snap.metadata.fromCache && firstCfg){
+        firstCfg = false;
+        const cloud = new Set(snap.docs.map(x=>x.id));
+        migrateOriginal(cloud);
+        if(S.me && S.people[S.me] && S.people[S.me].updatedAt && (!cloud.has('p_'+S.me) || (S.people[S.me].updatedAt > ((snap.docs.find(x=>x.id==='p_'+S.me)||{data:()=>({})}).data().updatedAt||0)))) pushPerson(true);
+        Object.values(S.ch).forEach(c=>{ if(c.createdBy === S.me && !cloud.has(c.id)) pushCh(c); });
+      }
+      if(touched){ saveLocal(); softRender(); }
       checkNudge();
     }, err=>syncErr(err));
 
@@ -1090,23 +1787,30 @@ async function initCloud(){
         if(ch.type === 'removed'){ if(S.logs[id]){ delete S.logs[id]; touched = true; } return; }
         const d = ch.doc.data();
         if(JSON.stringify(S.logs[id]) !== JSON.stringify(d)){
-          const isNewFromThem = !S.logs[id] && !first && d.who !== S.me;
+          const isNewFromThem = !S.logs[id] && !firstLogs && d.who !== S.me;
           S.logs[id] = d; touched = true;
           if(isNewFromThem) toast(`<span style="font-size:22px">🏃</span><span><b>${P[d.who]?.name}</b> just logged ${mi(d.dist)} mi${d.loc?' at '+esc(d.loc):''}</span>`, 5000);
         }
       });
       if(!snap.metadata.fromCache){
         cloudIds = new Set(snap.docs.map(d=>d.id));
-        if(first){ first = false; flushPending(); }
-        lastSync = Date.now();
+        if(firstLogs){ firstLogs = false; flushPending(); }
       }
       if(touched){ saveLocal(); softRender(); }
       if(!snap.metadata.fromCache) syncState(navigator.onLine?'on':'', navigator.onLine?'Synced':'Offline');
     }, err=>syncErr(err));
   }catch(e){ console.warn('cloud off', e); syncState('', 'Local Only'); }
 }
-let cloudIds = new Set(), lastSync = 0, flushing = false;
-// Re-send anything of mine the cloud is missing or has an older copy of (failed saves, offline runs, edits).
+// The original 30-day challenge (Nov 5 → Dec 4) becomes the club's first challenge so nothing is lost.
+function migrateOriginal(cloud){
+  if(cloud.has('ch_original') || S.ch.ch_original || LS.get('rc_migrated', false)) return;
+  const start = S.cfg.start || CLUB_START, days = Math.max(7, +S.cfg.days || 30);
+  const c = {id:'ch_original', name:'The Original '+days, emoji:'🔥', kind:'daily', mode:'versus', start, end: shift(start, days-1), target:'',
+    rules:{minDist:0, types:[], breaksPause:true, rest:0, strikes:'', wkUnit:'runs', minTotal:0},
+    stakes:'', createdBy:'oliver', accepted:{oliver:true, alexis:true}, createdAt: Date.parse(start+'T12:00:00'), updatedAt: Date.now()};
+  S.ch[c.id] = c; LS.set('rc_migrated', true); saveLocal(); pushCh(c);
+}
+let cloudIds = new Set(), flushing = false;
 async function flushPending(){
   if(!syncOn || flushing) return; flushing = true;
   try{
@@ -1121,9 +1825,8 @@ async function flushPending(){
 }
 function pendingIds(){ return new Set(LS.get('rc_pending', [])); }
 function markPending(id, on){ const s = pendingIds(); on ? s.add(id) : s.delete(id); LS.set('rc_pending', [...s]); }
-// photos stay on the phone only until they've reached the cloud, so they can't fill up phone storage
 function holdPhoto(id, list){ if(!LS.set('rc_ph_'+id, list)) console.warn('photo not kept locally (storage full)'); }
-function syncErr(err){ console.warn('sync', err); syncState('err', err.code==='permission-denied' ? 'Sync Blocked' : 'Not Synced · Tap'); }
+function syncErr(err){ console.warn('sync', err); syncState('err', err && err.code==='permission-denied' ? 'Sync Blocked' : 'Not Synced · Tap'); }
 function withTimeout(p, ms){ return Promise.race([p, new Promise((_,rej)=>setTimeout(()=>rej({code:'timeout'}), ms))]); }
 async function pushLog(l){
   if(!syncOn) return; markPending(l.id, true);
@@ -1135,7 +1838,14 @@ async function pushPhoto(id, list){
   try{ await withTimeout(FS.setDoc(FS.doc(db,'run_photos',id), {list, at:Date.now()}), 45000); try{localStorage.removeItem('rc_ph_'+id);}catch(e){} }
   catch(e){ syncErr(e); }
 }
-// Kick a stalled connection (iOS often drops it while the app is in the background) and resend.
+function pushPerson(keepStamp){
+  if(!S.me) return;
+  const me = S.people[S.me];
+  if(!keepStamp) me.updatedAt = Date.now();
+  saveLocal();
+  if(syncOn) FS.setDoc(FS.doc(db,'run_config','p_'+S.me), JSON.parse(JSON.stringify(me))).catch(e=>syncErr(e));
+}
+function pushCh(c){ if(syncOn) FS.setDoc(FS.doc(db,'run_config',c.id), JSON.parse(JSON.stringify(c))).catch(e=>syncErr(e)); }
 async function syncNow(manual){
   if(!syncOn){ if(manual) toast('Cloud sync couldn’t start — check your connection and reopen the app'); return; }
   syncState('', 'Syncing');
@@ -1146,7 +1856,7 @@ async function syncNow(manual){
 function delPhoto(id){ if(syncOn) FS.deleteDoc(FS.doc(db,'run_photos',id)).catch(()=>{}); }
 function pushCfg(){
   S.cfg.updatedAt = Date.now(); saveLocal();
-  if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {start:S.cfg.start, days:DAYS, updatedAt:S.cfg.updatedAt}, {merge:true}).catch(e=>syncErr(e));
+  if(syncOn) FS.setDoc(FS.doc(db,'run_config','main'), {start:S.cfg.start, updatedAt:S.cfg.updatedAt}, {merge:true}).catch(e=>syncErr(e));
 }
 addEventListener('online', ()=>{ if(syncOn) syncNow(false); else syncState('', 'Local Only'); });
 addEventListener('offline', ()=>syncState('', 'Offline'));
@@ -1156,8 +1866,9 @@ document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ softRe
 applyMe();
 render();
 if(!S.me) pickWho();
-initCloud();
+if(!window.__NO_CLOUD) initCloud();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+setTimeout(checkChEvents, 1500);
 </script>
 </body>
 </html>
